@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inFusion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="./Logo/in Fusion.svg" type="image/x-icon">
+</head>
+<body>
+
+    
+ <!-- Código HTML para enlace a WhatsApp con imagen local -->
+<a href="https://api.whatsapp.com/send?phone=+5492644847330&text=Hola%20inFusion%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." class="float" target="_blank">
+    <img src="./Iconos/whatsappblanco.svg" alt="WhatsApp Icon" class="my-float">
+  </a>  
+
+<!-- Header con Navegación -->
+<header>
+    <div class="logo">
+        <img src="./Logo/in Fusion.png" alt="in Fusion Logo">
+    </div>
+        <nav>
+            <a href="#carousel">Inicio</a>
+            <a href="#todoslosproductos">Productos</a>
+            <a href="#nosotros">Nosotros</a>
+            <!-- <a href="#contacto">Contacto</a> -->
+            <!-- Botón del Carrito de Compras -->
+            <div class="cart-container">
+                <button id="cart-button">
+                    🛒 Carrito (<span id="cart-count">0</span>)
+                </button>
+                <div id="cart-details" class="cart-details">
+                    <div class="nav-cart">
+                        <a>Carrito</a>
+                        <button id="close-cart" class="close-cart-button">X</button>
+                    </div>
+                    <ul id="cart-items"></ul>
+                    <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
+                </div>
+            </div>
+        </nav>
+</header>
+
+<section id="carousel" class="carousel">
+    <button class="carousel-control prev" id="prev">&#10094;</button>
+    <div class="carousel-track-container">
+        <ul class="carousel-track" id="carousel-track">
+            <li class="carousel-slide"><img src="./Banner/belladonna.jpg" alt="Image 1"></li>
+            <li class="carousel-slide"><img src="./Banner/Banner Anuncio.jpg" alt="Image 2"></li>
+            <li class="carousel-slide"><img src="./Banner/Banner Organizacion.jpg" alt="Image 3"></li>
+            <!-- Agrega más imágenes según sea necesario -->
+        </ul>
+    </div>
+    <button class="carousel-control next" id="next">&#10095;</button>
+    <div class="carousel-indicators" id="carousel-indicators"></div>
+</section>
+
+<!-- Sección Hero -->
+<section id="inicio" class="hero-section">
+    <div class="hero-content">
+        <video width="100%" height="auto" controls loop autoplay muted>
+            <source src="./Videos/vino1.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+    </div>
+</section>
+
+<!-- Sección de Productos -->
+<div class="productos-conteiner" id="todoslosproductos"><p >Productos</p>
+<section id="productos" class="productos">
+    <!-- <div class="product-card" data-details="Detalles adicionales de Bebida 1">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Bebida 1" id="Bebida 1">
+        <h2>EL RELATOR HERMANO MAYOR MALBEC</h2>
+        <p><strong>$27.000</strong></p>
+        <button class="add-to-cart" data-product-id="1">Agregar al Carrito</button>
+    </div> -->
+    <div class="product-card" data-details="El Gin Belladonna combina un perfil de enebro con toques florales y cítricos, destacando por su cambio de color de lila a rosa intenso al mezclarlo con tónica. Ideal para quienes buscan una experiencia visual y gustativa única.">
+        <img src="./IMG/Gin Belladonna.jpg" alt="Gin Belladonna">
+        <h2>Gin Belladonna</h2>
+        <p><strong>$25.000</strong></p>
+        <button class="add-to-cart" data-product-id="1">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/Cordero Con Piel de Lobo Malbec.jpg" alt="Cordero Con Piel de Lobo Malbec">
+        <h2>Cordero Con Piel de Lobo Malbec</h2>
+        <p><strong>$5.500</strong></p>
+        <button class="add-to-cart" data-product-id="2">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/EL GORDO MOTONETA MALBEC 750CC.jpg" alt="EL GORDO MOTONETA MALBEC 750CC">
+        <h2>EL GORDO MOTONETA MALBEC 750CC</h2>
+        <p><strong>$5.500</strong></p>
+        <button class="add-to-cart" data-product-id="3">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/HIERBA MALA GINEBRA X 1000 CC.jpg" alt="HIERBA MALA GINEBRA X 1000 CC">
+        <h2>HIERBA MALA GINEBRA X 1000 CC</h2>
+        <p><strong>$23.500</strong></p>
+        <button class="add-to-cart" data-product-id="4">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/CAJA X 6 UNIDADES GINEBRA HIERBA MALA X 1 LT.jpg" alt="CAJA X 6 UNIDADES GINEBRA HIERBA MALA X 1 LT">
+        <h2>CAJA X 6 UNIDADES GINEBRA HIERBA MALA X 1 LT</h2>
+        <p><strong>$119.000</strong></p>
+        <button class="add-to-cart" data-product-id="5">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/NICASIA RED BLEND ESTUCHE X2 X 750 CC.jpg" alt="NICASIA RED BLEND ESTUCHE X2 X 750 CC">
+        <h2>NICASIA RED BLEND ESTUCHE X2 X 750 CC</h2>
+        <p><strong>$20.999</strong></p>
+        <button class="add-to-cart" data-product-id="6">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/EL RELATOR CABERNET FRANC.JPG" alt="EL RELATOR CABERNET FRANC">
+        <h2>EL RELATOR CABERNET FRANC</h2>
+        <p><strong>$9.900</strong></p>
+        <button class="add-to-cart" data-product-id="7">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/CAJA X 6 UNIDADES GIN BELLADONNA X 1 LT.jpg" alt="CAJA X 6 UNIDADES GIN BELLADONNA X 1 LT">
+        <h2>CAJA X 6 UNIDADES GIN BELLADONNA X 1 LT</h2>
+        <p><strong>$126.700</strong></p>
+        <button class="add-to-cart" data-product-id="8">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/EL RELATOR EXTRA BRUT.jpg" alt="EL RELATOR EXTRA BRUT">
+        <h2>EL RELATOR EXTRA BRUT</h2>
+        <p><strong>$10.300</strong></p>
+        <button class="add-to-cart" data-product-id="9">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/EL PORVENIR - ROSA ROSA.jpg" alt="EL PORVENIR - ROSA ROSA">
+        <h2>EL PORVENIR - ROSA ROSA</h2>
+        <p><strong>$7.200</strong></p>
+        <button class="add-to-cart" data-product-id="10">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL PORVENIR - AMAUTA ABSOLUTO TANNAT.jpg" alt="EL PORVENIR - AMAUTA ABSOLUTO TANNAT">
+        <h2>EL PORVENIR - AMAUTA ABSOLUTO TANNAT</h2>
+        <p><strong>$11.000</strong></p>
+        <button class="add-to-cart" data-product-id="11">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/ELEGIDOS DE SEBASTIAN ZUCCARDI ESTUCHE DE MADERA X4.jpg" alt="ELEGIDOS DE SEBASTIAN ZUCCARDI ESTUCHE DE MADERA X4">
+        <h2>ELEGIDOS DE SEBASTIAN ZUCCARDI ESTUCHE DE MADERA X4</h2>
+        <p><strong>$257.000</strong></p>
+        <button class="add-to-cart" data-product-id="12">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/UN MUNDO CHIQUITO MALBEC.jpg" alt="UN MUNDO CHIQUITO MALBEC">
+        <h2>UN MUNDO CHIQUITO MALBEC</h2>
+        <p><strong>$5.000</strong></p>
+        <button class="add-to-cart" data-product-id="13">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/UN MUNDO CHIQUITO CORTE DE BLANCAS X 750 CC.jpg" alt="UN MUNDO CHIQUITO CORTE DE BLANCAS X 750 CC">
+        <h2>UN MUNDO CHIQUITO CORTE DE BLANCAS X 750 CC</h2>
+        <p><strong>$5.000</strong></p>
+        <button class="add-to-cart" data-product-id="14">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/PYROS APPELLATION MALBEC X 750 CC.jpg" alt="PYROS APPELLATION MALBEC X 750 CC">
+        <h2>PYROS APPELLATION MALBEC X 750 CC</h2>
+        <p><strong>$11.000</strong></p>
+        <button class="add-to-cart" data-product-id="15">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/PYROS APPELLATION SYRAH X 750 CC.jpg" alt="PYROS APPELLATION SYRAH X 750 CC">
+        <h2>PYROS APPELLATION SYRAH X 750 CC</h2>
+        <p><strong>$11.000</strong></p>
+        <button class="add-to-cart" data-product-id="16">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/PYROS APPELLATION CHARDONNAY X 750 CC.jpg" alt="PYROS APPELLATION CHARDONNAY X 750 CC">
+        <h2>PYROS APPELLATION CHARDONNAY X 750 CC</h2>
+        <p><strong>$11.000</strong></p>
+        <button class="add-to-cart" data-product-id="17">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/LICOR DE CAÑA LEGUI X 750 CC.jpg" alt="LICOR DE CAÑA LEGUI X 750 CC">
+        <h2>LICOR DE CAÑA LEGUI X 750 CC</h2>
+        <p><strong>$6.000</strong></p>
+        <button class="add-to-cart" data-product-id="18">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/JÄGERMEISTER X 700 CC.jpg" alt="JÄGERMEISTER X 700 CC">
+        <h2>JÄGERMEISTER X 700 CC</h2>
+        <p><strong>$26.000</strong></p>
+        <button class="add-to-cart" data-product-id="19">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/JAGËRMEISTER X 1750 CC.jpg" alt="JAGËRMEISTER X 1750 CC">
+        <h2>JAGËRMEISTER X 1750 CC</h2>
+        <p><strong>$64.000</strong></p>
+        <button class="add-to-cart" data-product-id="20">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/BEEFEATER GIN X 700 CC.jpg" alt="BEEFEATER GIN X 700 CC">
+        <h2>BEEFEATER GIN X 700 CC</h2>
+        <p><strong>$24.300</strong></p>
+        <button class="add-to-cart" data-product-id="21">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/BOMBAY GIN X 750 CC.jpg" alt="BOMBAY GIN X 750 CC">
+        <h2>BOMBAY GIN X 750 CC</h2>
+        <p><strong>$28.000</strong></p>
+        <button class="add-to-cart" data-product-id="22">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/CONTRAVIENTO BLEND DE TINTAS X6.jpg" alt="CONTRAVIENTO BLEND DE TINTAS X6">
+        <h2>CONTRAVIENTO BLEND DE TINTAS X6</h2>
+        <p><strong>$24.000</strong></p>
+        <button class="add-to-cart" data-product-id="23">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/Vino Portillo Cabernet Sauvignon x3.jpg" alt="Vino Portillo Cabernet Sauvignon x3">
+        <h2>Vino Portillo Cabernet Sauvignon x3</h2>
+        <p><strong>$12.400</strong></p>
+        <button class="add-to-cart" data-product-id="24">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/Vino Tinto Elementos Malbec x3.jpg" alt="Vino Tinto Elementos Malbec x3">
+        <h2>Vino Tinto Elementos Malbec x3</h2>
+        <p><strong>$9.900</strong></p>
+        <button class="add-to-cart" data-product-id="25">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/Las Perdices Malbec x3.jpg" alt="Las Perdices Malbec x3">
+        <h2>Las Perdices Malbec x3</h2>
+        <p><strong>$19.000</strong></p>
+        <button class="add-to-cart" data-product-id="26">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/HEREDERO GIN AÑEJO X 700 CC.jpg" alt="HEREDERO GIN AÑEJO X 700 CC">
+        <h2>HEREDERO GIN AÑEJO X 700 CC</h2>
+        <p><strong>$25.100</strong></p>
+        <button class="add-to-cart" data-product-id="27">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/ACONCAGUA GIN X750CC CAJA x6.jpg" alt="ACONCAGUA GIN X750CC CAJA x6">
+        <h2>ACONCAGUA GIN X750CC CAJA x6</h2>
+        <p><strong>$73.500</strong></p>
+        <button class="add-to-cart" data-product-id="28">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="29">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="30">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/EL RELATOR MALBEC.jpeg" alt="EL RELATOR MALBEC">
+        <h2>EL RELATOR MALBEC</h2>
+        <p><strong>$9.900</strong></p>
+        <button class="add-to-cart" data-product-id="31">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Bebida 3">
+        <h2>Bebida Refrescante 3</h2>
+        <p><strong>$9.75</strong></p>
+        <button class="add-to-cart" data-product-id="32">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Coca">
+        <h2>Coca</h2>
+        <p><strong>$7.25</strong></p>
+        <button class="add-to-cart" data-product-id="33">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Jugo">
+        <h2>Jugo</h2>
+        <p><strong>$5.00</strong></p>
+        <button class="add-to-cart" data-product-id="34">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="35">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="36">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/EL RELATOR MALBEC.jpeg" alt="EL RELATOR MALBEC">
+        <h2>EL RELATOR MALBEC</h2>
+        <p><strong>$9.900</strong></p>
+        <button class="add-to-cart" data-product-id="37">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Bebida 3">
+        <h2>Bebida Refrescante 3</h2>
+        <p><strong>$9.75</strong></p>
+        <button class="add-to-cart" data-product-id="38">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Coca">
+        <h2>Coca</h2>
+        <p><strong>$7.25</strong></p>
+        <button class="add-to-cart" data-product-id="39">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Jugo">
+        <h2>Jugo</h2>
+        <p><strong>$5.00</strong></p>
+        <button class="add-to-cart" data-product-id="40">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="41">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="42">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 2">
+        <img src="./IMG/EL RELATOR MALBEC.jpeg" alt="EL RELATOR MALBEC">
+        <h2>EL RELATOR MALBEC</h2>
+        <p><strong>$9.900</strong></p>
+        <button class="add-to-cart" data-product-id="43">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Bebida 3">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Bebida 3">
+        <h2>Bebida Refrescante 3</h2>
+        <p><strong>$9.75</strong></p>
+        <button class="add-to-cart" data-product-id="44">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Coca">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Coca">
+        <h2>Coca</h2>
+        <p><strong>$7.25</strong></p>
+        <button class="add-to-cart" data-product-id="45">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Jugo">
+        <h2>Jugo</h2>
+        <p><strong>$5.00</strong></p>
+        <button class="add-to-cart" data-product-id="46">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="47">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="48">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Jugo">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Jugo">
+        <h2>Jugo</h2>
+        <p><strong>$5.00</strong></p>
+        <button class="add-to-cart" data-product-id="49">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="50">Agregar al Carrito</button>
+    </div>
+    <div class="product-card" data-details="Detalles adicionales de Vino">
+        <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Vino">
+        <h2>Vino</h2>
+        <p><strong>$18.00</strong></p>
+        <button class="add-to-cart" data-product-id="51">Agregar al Carrito</button>
+    </div>
+</section>
+</div>
+
+
+
+<!-- Sección Nosotros -->
+<section id="nosotros" class="nosotros">
+    <h2>Sobre Nosotros</h2>
+    <p>Somos una compañía dedicada a ofrecer las mejores bebidas del mercado. Nuestra misión es proporcionar productos de alta calidad que satisfagan los gustos de todos nuestros clientes.</p>
+</section>
+
+<!-- Sección Contacto
+<section id="contacto" class="contacto">
+    <h2>Contacto</h2>
+    <form action="#">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <input type="submit" value="Enviar">
+    </form>
+</section> -->
+
+<!-- Footer -->
+<footer>
+    <p>&copy; 2024 inFusion. Todos los derechos reservados.</p>
+    <!-- <p><a href="#carousel">Inicio</a> | <a href="#todoslosproductos">Productos</a> | <a href="#nosotros">Nosotros</a> | <a href="#contacto">Contacto</a> </p> -->
+    <div class="social-icons">
+        <a href="https://www.tiktok.com/@in.fusion.69" target="_blank" aria-label="TikTok">
+            <img src="./Iconos/tiktok.jpg" alt="TikTok Icon"></a>
+        <a href="https://www.instagram.com/in.fusion.69/" target="_blank" aria-label="Instagram">
+            <img src="./Iconos/instagram.jpg" alt="Instagram Icon"></a>
+        <a href="https://www.facebook.com/infusion" target="_blank" aria-label="Facebook">
+            <img src="./Iconos/facebook.jpg" alt="Facebook Icon"></a>
+        <a href="infusion.ventadebebidas@gmail.com" aria-label="Gmail">
+            <img src="./Iconos/email.jpg" alt="Gmail Icon"></a>
+    </div>
+</footer>
+
+
+<script src="script.js"></script>
+</body>
+</html>
