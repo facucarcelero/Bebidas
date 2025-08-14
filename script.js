@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const cartButton = document.getElementById('cart-button');
     const cartCountElement = document.getElementById('cart-count');
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
     const cartDetails = document.getElementById('cart-details');
     const cartItemsElement = document.getElementById('cart-items');
     const checkoutButton = document.getElementById('checkout-button');
@@ -13,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
     const indicatorsContainer = document.getElementById('carousel-indicators');
+    const navToggle = document.getElementById('nav-toggle');
+    const nav = document.getElementById('nav');
+
+    renderStoredProducts();
+    setupProductInteractions();
 
     let currentIndex = 0;
 
@@ -53,19 +57,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = this.getAttribute('data-product-id');
-            const productName = this.parentElement.querySelector('h2').textContent;
+    function renderStoredProducts() {
+        const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+        const container = document.getElementById('productos');
+        storedProducts.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-details', p.details || '');
+            card.innerHTML = `
+                <img src="${p.image}" alt="${p.name}">
+                <h2>${p.name}</h2>
+                <p><strong>$${p.price}</strong></p>
+                <button class="add-to-cart" data-product-id="new-${index}">Agregar al Carrito</button>
+            `;
+            container.appendChild(card);
+        });
+    }
 
+    document.getElementById('productos').addEventListener('click', function(e) {
+        if (e.target.classList.contains('add-to-cart')) {
+            const productId = e.target.getAttribute('data-product-id');
+            const productName = e.target.closest('.product-card').querySelector('h2').textContent;
             if (cartItems[productId]) {
                 cartItems[productId].quantity++;
             } else {
                 cartItems[productId] = { name: productName, quantity: 1 };
             }
-
             updateCart();
-        });
+        }
     });
 
     cartButton.addEventListener('click', function() {
@@ -78,6 +97,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     closeCart.addEventListener('click', function() {
         cartDetails.style.display = 'none';
+    });
+
+    navToggle.addEventListener('click', function() {
+        nav.classList.toggle('open');
     });
 
     function updateCart() {
@@ -134,32 +157,15 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCart();
     }
 
-    // Comentado: Código para mostrar y ocultar la descripción de los productos
-    /*
-    document.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('mouseover', function () {
-            const detailsText = this.getAttribute('data-details');
-            let detailsDiv = this.querySelector('.product-details');
-
-            if (!detailsDiv) {  // Si no existe, crearlo
-                detailsDiv = document.createElement('div');
-                detailsDiv.classList.add('product-details');
-                this.appendChild(detailsDiv);
-            }
-
-            detailsDiv.textContent = detailsText; // Mostrar el texto de detalle
-            detailsDiv.style.display = 'block'; // Asegura que se muestra
+    function setupProductInteractions() {
+        document.querySelectorAll('.product-card').forEach(card => {
+            const detailsText = card.getAttribute('data-details');
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'product-details';
+            detailsDiv.textContent = detailsText;
+            card.appendChild(detailsDiv);
         });
-
-        card.addEventListener('mouseleave', function () {
-            // Ocultar detalles al salir el mouse
-            const detailsDiv = this.querySelector('.product-details');
-            if (detailsDiv) {
-                detailsDiv.style.display = 'none'; // Ocultar el div de detalles
-            }
-        });
-    });
-    */
+    }
 
     function sendToWhatsApp() {
         if (Object.keys(cartItems).length === 0) {

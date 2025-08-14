@@ -10,36 +10,36 @@
 <body>
 
     
- <!-- Código HTML para enlace a WhatsApp con imagen local -->
+<!-- botón flotante de WhatsApp -->
 <a href="https://api.whatsapp.com/send?phone=+5492644847330&text=Hola%20inFusion%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." class="float" target="_blank">
     <img src="./Iconos/whatsappblanco.svg" alt="WhatsApp Icon" class="my-float">
-  </a>  
+</a>
 
-<!-- Header con Navegación -->
-<header>
+<!-- Header con navegación responsiva -->
+<header class="site-header">
     <div class="logo">
-        <img src="./Logo/in Fusion.png" alt="in Fusion Logo">
+        <img src="./Logo/in Fusion.png" alt="inFusion Logo">
     </div>
-        <nav>
-            <a href="#carousel">Inicio</a>
-            <a href="#todoslosproductos">Productos</a>
-            <a href="#nosotros">Nosotros</a>
-            <!-- <a href="#contacto">Contacto</a> -->
-            <!-- Botón del Carrito de Compras -->
-            <div class="cart-container">
-                <button id="cart-button">
-                    🛒 Carrito (<span id="cart-count">0</span>)
-                </button>
-                <div id="cart-details" class="cart-details">
-                    <div class="nav-cart">
-                        <a>Carrito</a>
-                        <button id="close-cart" class="close-cart-button">X</button>
-                    </div>
-                    <ul id="cart-items"></ul>
-                    <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
-                </div>
+    <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú">☰</button>
+    <nav id="nav" class="nav-links">
+        <a href="#carousel">Inicio</a>
+        <a href="#todoslosproductos">Productos</a>
+        <a href="#nosotros">Nosotros</a>
+        <a href="admin.html">Admin</a>
+    </nav>
+    <div class="cart-container">
+        <button id="cart-button">
+            🛒 Carrito (<span id="cart-count">0</span>)
+        </button>
+        <div id="cart-details" class="cart-details">
+            <div class="nav-cart">
+                <a>Carrito</a>
+                <button id="close-cart" class="close-cart-button">X</button>
             </div>
-        </nav>
+            <ul id="cart-items"></ul>
+            <button id="checkout-button" class="checkout-button">Finalizar Compra</button>
+        </div>
+    </div>
 </header>
 
 <section id="carousel" class="carousel">
@@ -67,8 +67,9 @@
 </section>
 
 <!-- Sección de Productos -->
-<div class="productos-conteiner" id="todoslosproductos"><p >Productos</p>
-<section id="productos" class="productos">
+<div class="productos-container" id="todoslosproductos">
+    <h2>Productos</h2>
+    <section id="productos" class="product-grid">
     <!-- <div class="product-card" data-details="Detalles adicionales de Bebida 1">
         <img src="./IMG/EL RELATOR MALBEC.jpg" alt="Bebida 1" id="Bebida 1">
         <h2>EL RELATOR HERMANO MAYOR MALBEC</h2>
