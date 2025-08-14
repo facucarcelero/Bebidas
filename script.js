@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const nav = document.getElementById('nav');
 
     renderStoredProducts();
-    setupProductInteractions();
 
     let currentIndex = 0;
 
@@ -57,21 +56,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    function renderStoredProducts() {
-        const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
-        const container = document.getElementById('productos');
-        storedProducts.forEach((p, index) => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.setAttribute('data-details', p.details || '');
-            card.innerHTML = `
-                <img src="${p.image}" alt="${p.name}">
-                <h2>${p.name}</h2>
-                <p><strong>$${p.price}</strong></p>
-                <button class="add-to-cart" data-product-id="new-${index}">Agregar al Carrito</button>
-            `;
-            container.appendChild(card);
-        });
+    async function renderStoredProducts() {
+        try {
+            const res = await fetch('http://localhost:3000/products');
+            const storedProducts = await res.json();
+            const container = document.getElementById('productos');
+            storedProducts.forEach((p) => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('data-details', p.details || '');
+                card.innerHTML = `
+                    <img src="${p.image}" alt="${p.name}">
+                    <h2>${p.name}</h2>
+                    <p><strong>$${p.price}</strong></p>
+                    <button class="add-to-cart" data-product-id="db-${p.id}">Agregar al Carrito</button>
+                `;
+                container.appendChild(card);
+            });
+            setupProductInteractions();
+        } catch (err) {
+            console.error('Error al cargar productos', err);
+        }
     }
 
     document.getElementById('productos').addEventListener('click', function(e) {
