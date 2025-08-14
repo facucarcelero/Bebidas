@@ -4,9 +4,8 @@ const { parse } = require('url');
 const crypto = require('crypto');
 
 const DB_FILE = './db.json';
+const USERS_FILE = './users.json';
 const PORT = 3000;
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = '1234';
 const sessions = {};
 
 function readDB() {
@@ -18,6 +17,13 @@ function readDB() {
 
 function writeDB(db) {
     fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2));
+}
+
+function readUsers() {
+    if (!fs.existsSync(USERS_FILE)) {
+        fs.writeFileSync(USERS_FILE, JSON.stringify({ users: [] }, null, 2));
+    }
+    return JSON.parse(fs.readFileSync(USERS_FILE));
 }
 
 function sendJSON(res, status, data) {
@@ -47,9 +53,12 @@ const server = http.createServer((req, res) => {
         req.on('data', chunk => body += chunk);
         req.on('end', () => {
             const { username, password } = JSON.parse(body || '{}');
-            if (username === ADMIN_USER && password === ADMIN_PASS) {
+            const users = readUsers().users || [];
+            const user = users.find(u => u.username === username);
+            const hash = crypto.createHash('sha256').update(password).digest('hex');
+            if (user && user.passwordHash === hash) {
                 const token = crypto.randomBytes(16).toString('hex');
-                sessions[token] = true;
+                sessions[token] = username;
                 sendJSON(res, 200, { token });
             } else {
                 sendJSON(res, 401, { error: 'Unauthorized' });
