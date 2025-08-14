@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="login-section">
+        <h1>Admin Login</h1>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button id="login-button">Ingresar</button>
+    </div>
+
+    <div id="admin-section" style="display:none;">
+        <h1>Panel de Administración</h1>
+        <button id="logout">Cerrar Sesión</button>
+        <h2>Productos</h2>
+        <ul id="product-list"></ul>
+        <h2>Agregar Producto</h2>
+        <input type="text" id="prod-name" placeholder="Nombre">
+        <input type="text" id="prod-price" placeholder="Precio">
+        <input type="text" id="prod-image" placeholder="URL de imagen">
+        <input type="text" id="prod-details" placeholder="Detalles">
+        <button id="add-product">Agregar</button>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

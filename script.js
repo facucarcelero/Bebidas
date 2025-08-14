@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const cartButton = document.getElementById('cart-button');
     const cartCountElement = document.getElementById('cart-count');
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
     const cartDetails = document.getElementById('cart-details');
     const cartItemsElement = document.getElementById('cart-items');
     const checkoutButton = document.getElementById('checkout-button');
@@ -13,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevButton = document.getElementById('prev');
     const nextButton = document.getElementById('next');
     const indicatorsContainer = document.getElementById('carousel-indicators');
+
+    renderStoredProducts();
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
 
     let currentIndex = 0;
 
@@ -52,6 +54,23 @@ document.addEventListener('DOMContentLoaded', function() {
             moveToSlide(slides.length - 1);
         }
     });
+
+    function renderStoredProducts() {
+        const storedProducts = JSON.parse(localStorage.getItem('products')) || [];
+        const container = document.getElementById('productos');
+        storedProducts.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-details', p.details || '');
+            card.innerHTML = `
+                <img src="${p.image}" alt="${p.name}">
+                <h2>${p.name}</h2>
+                <p><strong>$${p.price}</strong></p>
+                <button class="add-to-cart" data-product-id="new-${index}">Agregar al Carrito</button>
+            `;
+            container.appendChild(card);
+        });
+    }
 
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function() {
