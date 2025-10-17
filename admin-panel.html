@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inFusion Admin - Panel de Control</title>
+    <link rel="shortcut icon" href="./Logo/in Fusion.svg" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .admin-header {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.5rem;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-email {
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        /* Main Container */
+        .admin-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+        }
+
+        .nav-item {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-left-color: #ff6b35;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 107, 53, 0.3);
+            border-left-color: #ff6b35;
+        }
+
+        .nav-item i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+
+        /* Products Management */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .add-product-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-product-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+        }
+
+        .products-table {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .products-table th,
+        .products-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .products-table th {
+            background: rgba(255, 107, 53, 0.2);
+            font-weight: 600;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: rgba(52, 152, 219, 0.3);
+        }
+
+        .edit-btn:hover {
+            background: rgba(52, 152, 219, 0.5);
+        }
+
+        .delete-btn {
+            background: rgba(231, 76, 60, 0.3);
+        }
+
+        .delete-btn:hover {
+            background: rgba(231, 76, 60, 0.5);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .products-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <h1><i class="fas fa-cogs"></i> Panel de Administración</h1>
+        <div class="admin-info">
+            <span class="admin-email" id="admin-email"></span>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="showSection('products')">
+                <i class="fas fa-box"></i> Productos
+            </div>
+            <div class="nav-item" onclick="showSection('orders')">
+                <i class="fas fa-shopping-cart"></i> Pedidos
+            </div>
+            <div class="nav-item" onclick="showSection('analytics')">
+                <i class="fas fa-chart-bar"></i> Analytics
+            </div>
+            <div class="nav-item" onclick="showSection('settings')">
+                <i class="fas fa-cog"></i> Configuración
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <h2>Dashboard</h2>
+                <div class="dashboard-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-products">16</div>
+                        <div class="stat-label">Productos Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-orders">0</div>
+                        <div class="stat-label">Pedidos Recibidos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="total-revenue">$0</div>
+                        <div class="stat-label">Ingresos Totales</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="active-users">0</div>
+                        <div class="stat-label">Usuarios Activos</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section id="products" class="content-section">
+                <div class="products-header">
+                    <h2>Gestión de Productos</h2>
+                    <button class="add-product-btn" onclick="openAddProductModal()">
+                        <i class="fas fa-plus"></i> Agregar Producto
+                    </button>
+                </div>
+                <div class="products-table">
+                    <table style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Categoría</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders" class="content-section">
+                <h2>Gestión de Pedidos</h2>
+                <p>Aquí podrás ver y gestionar todos los pedidos recibidos.</p>
+                <div id="orders-content">
+                    <p>No hay pedidos pendientes.</p>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="content-section">
+                <h2>Analytics</h2>
+                <p>Estadísticas y análisis del sitio web.</p>
+                <div id="analytics-content">
+                    <p>Analytics en desarrollo...</p>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="content-section">
+                <h2>Configuración</h2>
+                <p>Configuración general del sistema.</p>
+                <div id="settings-content">
+                    <p>Configuraciones en desarrollo...</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Agregar Producto</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Nombre del Producto</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Precio</label>
+                    <input type="number" id="product-price" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-category">Categoría</label>
+                    <select id="product-category" required>
+                        <option value="">Seleccionar categoría</option>
+                        <option value="gin">Gin</option>
+                        <option value="vino">Vino</option>
+                        <option value="licor">Licor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">URL de la Imagen</label>
+                    <input type="text" id="product-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-description">Descripción</label>
+                    <textarea id="product-description" rows="3" required></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Verificar autenticación
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Mostrar email del admin
+        document.getElementById('admin-email').textContent = localStorage.getItem('adminEmail');
+
+        // Datos de productos (simulando base de datos)
+        let products = [
+            {
+                id: 1,
+                name: "Gin Belladonna",
+                price: 25000,
+                image: "IMG/Gin Belladonna.jpg",
+                category: "gin",
+                description: "Gin premium con cambio de color"
+            },
+            {
+                id: 2,
+                name: "Cordero Con Piel de Lobo Malbec",
+                price: 5500,
+                image: "IMG/Cordero Con Piel de Lobo Malbec.jpg",
+                category: "vino",
+                description: "Vino tinto premium"
+            },
+            // ... más productos
+        ];
+
+        // Funciones de navegación
+        function showSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            document.getElementById(sectionId).classList.add('active');
+
+            // Actualizar navegación
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Cargar datos específicos de la sección
+            if (sectionId === 'products') {
+                loadProducts();
+            }
+        }
+
+        // Funciones de productos
+        function loadProducts() {
+            const tbody = document.getElementById('products-table-body');
+            tbody.innerHTML = '';
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><img src="${product.image}" alt="${product.name}" class="product-image"></td>
+                    <td>${product.name}</td>
+                    <td>$${product.price.toLocaleString()}</td>
+                    <td>${product.category}</td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editProduct(${product.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteProduct(${product.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function openAddProductModal() {
+            document.getElementById('modal-title').textContent = 'Agregar Producto';
+            document.getElementById('product-form').reset();
+            document.getElementById('product-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                document.getElementById('modal-title').textContent = 'Editar Producto';
+                document.getElementById('product-name').value = product.name;
+                document.getElementById('product-price').value = product.price;
+                document.getElementById('product-category').value = product.category;
+                document.getElementById('product-image').value = product.image;
+                document.getElementById('product-description').value = product.description;
+                document.getElementById('product-modal').style.display = 'block';
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+                products = products.filter(p => p.id !== id);
+                loadProducts();
+                alert('Producto eliminado exitosamente');
+            }
+        }
+
+        // Manejo del formulario
+        document.getElementById('product-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('product-name').value,
+                price: parseInt(document.getElementById('product-price').value),
+                category: document.getElementById('product-category').value,
+                image: document.getElementById('product-image').value,
+                description: document.getElementById('product-description').value
+            };
+
+            // Aquí agregarías la lógica para guardar en base de datos
+            alert('Producto guardado exitosamente');
+            closeModal();
+            loadProducts();
+        });
+
+        // Cerrar sesión
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminEmail');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Cerrar modal al hacer clic fuera
+        window.onclick = function(event) {
+            const modal = document.getElementById('product-modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Cargar datos iniciales
+        loadProducts();
+    </script>
+</body>
+</html> 

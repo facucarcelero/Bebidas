@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>inFusion 3D - Demostración</title>
+    <link rel="stylesheet" href="styles-3d.css">
+    <link rel="shortcut icon" href="./Logo/in Fusion.svg" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .demo-header {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .demo-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideInUp 1s ease-out;
+        }
+        
+        .demo-subtitle {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            animation: slideInUp 1s ease-out 0.2s both;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .feature-card:hover::before {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-20px) rotateX(10deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: #ff6b35;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .feature-description {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 1.5rem 3rem;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.5s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .cta-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-10px) rotateX(10deg);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.4);
+            animation: glow 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- WhatsApp Float Button -->
+    <a href="https://api.whatsapp.com/send?phone=+5492644127229&text=Hola%20inFusion%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Header con Navegación -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img src="./Logo/in Fusion.png" alt="inFusion Logo">
+            </div>
+            
+            <!-- Menú de navegación desktop -->
+            <nav class="nav-desktop">
+                <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="#caracteristicas" class="nav-link">Características</a>
+                <a href="#productos" class="nav-link">Productos</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </nav>
+
+            <!-- Carrito de compras -->
+            <div class="cart-container">
+                <button id="cart-button" class="cart-button">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </button>
+            </div>
+
+            <!-- Menú hamburguesa para móvil -->
+            <button class="hamburger-menu" id="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Menú móvil -->
+        <nav class="nav-mobile" id="nav-mobile">
+            <a href="#inicio" class="nav-link">Inicio</a>
+            <a href="#caracteristicas" class="nav-link">Características</a>
+            <a href="#productos" class="nav-link">Productos</a>
+            <a href="#contacto" class="nav-link">Contacto</a>
+        </nav>
+    </header>
+
+    <!-- Sección Hero -->
+    <section id="inicio" class="demo-header parallax" data-speed="0.5">
+        <div class="container">
+            <h1 class="demo-title">inFusion 3D Premium</h1>
+            <p class="demo-subtitle">Experiencia tridimensional que revoluciona el comercio de bebidas</p>
+        </div>
+    </section>
+
+    <!-- Sección de Características -->
+    <section id="caracteristicas" class="products-section parallax" data-speed="0.3">
+        <div class="container">
+            <div class="section-header">
+                <h2>Características 3D Premium</h2>
+                <p>Descubre las tecnologías avanzadas que hacen de inFusion una experiencia única</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Diseño 3D Inmersivo</h3>
+                    <p class="feature-description">Efectos tridimensionales que crean una experiencia visual impactante y moderna.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Animaciones Fluidas</h3>
+                    <p class="feature-description">Transiciones suaves y animaciones que responden a la interacción del usuario.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Responsive Total</h3>
+                    <p class="feature-description">Funciona perfectamente en todos los dispositivos, desde móviles hasta pantallas grandes.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3 class="feature-title">Interactividad Avanzada</h3>
+                    <p class="feature-description">Efectos hover 3D, cursor personalizado y feedback visual inmediato.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Rendimiento Optimizado</h3>
+                    <p class="feature-description">Código optimizado para máxima velocidad y experiencia fluida.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3 class="feature-title">Calidad Premium</h3>
+                    <p class="feature-description">Diseño profesional que transmite confianza y calidad a los clientes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Productos -->
+    <section id="productos" class="products-section parallax" data-speed="0.2">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestros Productos 3D</h2>
+                <p>Explora nuestra colección premium con efectos tridimensionales</p>
+            </div>
+
+            <!-- Filtros y búsqueda -->
+            <div class="products-controls">
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Buscar productos...">
+                </div>
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="todos">Todos</button>
+                    <button class="filter-btn" data-filter="gin">Gin</button>
+                    <button class="filter-btn" data-filter="vino">Vino</button>
+                    <button class="filter-btn" data-filter="licor">Licor</button>
+                </div>
+            </div>
+
+            <!-- Grid de productos -->
+            <div class="products-grid" id="products-grid">
+                <!-- Los productos se cargarán dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem; background: linear-gradient(135deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">¿Listo para la experiencia 3D?</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 3rem; opacity: 0.8;">Descubre el futuro del comercio de bebidas premium</p>
+            <a href="index.html" class="cta-button">
+                <i class="fas fa-rocket"></i> Ver Sitio Completo
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="./Logo/in Fusion.png" alt="inFusion" class="footer-logo">
+                    <p>Tu distribuidor de confianza para bebidas premium</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="https://www.tiktok.com/@In.fusion.bebidas" target="_blank" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://www.instagram.com/infusion.bebidas/" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61566118048160" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="mailto:infusion.ventadebebidas@gmail.com" aria-label="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 inFusion 3D Premium. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script-3d.js"></script>
+</body>
+</html> 

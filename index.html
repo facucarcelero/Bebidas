@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    
+    <!-- SEO Meta Tags -->
+    <title>inFusion - Distribuidora de Bebidas Premium | Gin, Vino y Licores</title>
+    <meta name="description" content="inFusion - Tu distribuidor de confianza para bebidas premium. Gin artesanal, vinos seleccionados y licores de calidad. Los mejores precios organizando con tiempo. Envío en 24-48 horas.">
+    <meta name="keywords" content="bebidas premium, gin, vino, licor, distribuidora bebidas, gin artesanal, vino argentino, bebidas alcohólicas">
+    <meta name="author" content="inFusion">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://infusion.com.ar/">
+    <meta property="og:title" content="inFusion - Distribuidora de Bebidas Premium">
+    <meta property="og:description" content="Los mejores precios en bebidas premium. Gin, vino y licores de calidad. Organizando con tiempo, todo es más barato.">
+    <meta property="og:image" content="./Logo/in Fusion.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://infusion.com.ar/">
+    <meta property="twitter:title" content="inFusion - Distribuidora de Bebidas Premium">
+    <meta property="twitter:description" content="Los mejores precios en bebidas premium. Gin, vino y licores de calidad.">
+    <meta property="twitter:image" content="./Logo/in Fusion.png">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ff6b35">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="./Logo/in Fusion.svg">
+    <link rel="shortcut icon" href="./Logo/in Fusion.svg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="./Logo/in Fusion.png">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles-final.css">
+    
+    <!-- Preload Critical Images -->
+    <link rel="preload" as="image" href="./Banner/belladonna.jpg">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "inFusion",
+      "description": "Distribuidora de bebidas premium",
+      "url": "https://infusion.com.ar",
+      "logo": "./Logo/in Fusion.png",
+      "telephone": "+54-2644-847330",
+      "email": "infusion.ventadebebidas@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "AR"
+      },
+      "sameAs": [
+        "https://www.instagram.com/infusion.bebidas/",
+        "https://www.facebook.com/profile.php?id=61566118048160",
+        "https://www.tiktok.com/@In.fusion.bebidas"
+      ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen" aria-hidden="true">
+        <div class="loading-content">
+            <img src="./Logo/in Fusion.png" alt="inFusion Logo" class="loading-logo">
+            <div class="loading-spinner"></div>
+            <p>Cargando experiencia premium...</p>
+        </div>
+    </div>
+
+    <!-- Skip to main content link for accessibility -->
+    <a href="#productos" class="skip-to-content">Saltar al contenido principal</a>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://api.whatsapp.com/send?phone=+5492644127229&text=Hola%20inFusion%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." 
+       class="whatsapp-float" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    </a>
+
+    <!-- Header con Navegación -->
+    <header class="header" role="banner">
+        <div class="header-container">
+            <div class="logo">
+                <a href="#inicio" aria-label="Ir al inicio">
+                    <img src="./Logo/in Fusion.png" alt="inFusion - Distribuidora de Bebidas Premium">
+                </a>
+            </div>
+            
+            <!-- Menú de navegación desktop -->
+            <nav class="nav-desktop" role="navigation" aria-label="Menú principal">
+                <a href="#inicio" class="nav-link">Inicio</a>
+                <a href="#productos" class="nav-link">Productos</a>
+                <a href="#nosotros" class="nav-link">Nosotros</a>
+                <a href="#contacto" class="nav-link">Contacto</a>
+            </nav>
+
+            <!-- Carrito de compras -->
+            <div class="cart-container">
+                <button id="cart-button" 
+                        class="cart-button" 
+                        aria-label="Abrir carrito de compras"
+                        aria-expanded="false"
+                        aria-controls="cart-details">
+                    <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                    <span id="cart-count" aria-live="polite">0</span>
+                </button>
+                <div id="cart-details" 
+                     class="cart-details" 
+                     role="dialog" 
+                     aria-labelledby="cart-title"
+                     aria-hidden="true">
+                    <div class="cart-header">
+                        <h3 id="cart-title">Carrito de Compras</h3>
+                        <button id="close-cart" 
+                                class="close-cart-button"
+                                aria-label="Cerrar carrito">
+                            <i class="fas fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                    <div class="cart-items" 
+                         id="cart-items" 
+                         role="list"
+                         aria-live="polite"
+                         aria-atomic="true"></div>
+                    <div class="cart-footer">
+                        <div class="cart-total" aria-live="polite">
+                            <span>Total: $<span id="cart-total">0</span></span>
+                        </div>
+                        <button id="checkout-button" class="checkout-button">
+                            <i class="fab fa-whatsapp" aria-hidden="true"></i>
+                            Consultar por WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menú hamburguesa para móvil -->
+            <button class="hamburger-menu" 
+                    id="hamburger-menu"
+                    aria-label="Abrir menú de navegación"
+                    aria-expanded="false"
+                    aria-controls="nav-mobile">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+
+        <!-- Menú móvil -->
+        <nav class="nav-mobile" 
+             id="nav-mobile" 
+             role="navigation" 
+             aria-label="Menú móvil"
+             aria-hidden="true">
+            <a href="#inicio" class="nav-link">Inicio</a>
+            <a href="#productos" class="nav-link">Productos</a>
+            <a href="#nosotros" class="nav-link">Nosotros</a>
+            <a href="#contacto" class="nav-link">Contacto</a>
+        </nav>
+    </header>
+
+    <!-- Sección Hero con Carrusel -->
+    <section id="inicio" class="hero-section parallax" data-speed="0.5" aria-label="Promociones destacadas">
+        <div class="carousel" role="region" aria-roledescription="carrusel" aria-label="Ofertas destacadas">
+            <button class="carousel-control prev" 
+                    id="prev"
+                    aria-label="Slide anterior"
+                    aria-controls="carousel-track">
+                <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="carousel-track-container">
+                <ul class="carousel-track" id="carousel-track" role="list">
+                    <li class="carousel-slide" role="listitem" aria-roledescription="slide">
+                        <img src="./Banner/belladonna.jpg" alt="Gin Belladonna - Gin artesanal que cambia de color" loading="eager">
+                        <div class="slide-content">
+                            <h2>Gin Belladonna</h2>
+                            <p>Descubre la magia del cambio de color</p>
+                        </div>
+                    </li>
+                    <li class="carousel-slide" role="listitem" aria-roledescription="slide">
+                        <img src="./Banner/Banner Anuncio.jpg" alt="Ofertas especiales en bebidas premium" loading="lazy">
+                        <div class="slide-content">
+                            <h2>Ofertas Especiales</h2>
+                            <p>Los mejores precios en bebidas premium</p>
+                        </div>
+                    </li>
+                    <li class="carousel-slide" role="listitem" aria-roledescription="slide">
+                        <img src="./Banner/Banner Organizacion.jpg" alt="Organiza tu compra con anticipación" loading="lazy">
+                        <div class="slide-content">
+                            <h2>Organización Perfecta</h2>
+                            <p>Todo organizado, todo más barato</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <button class="carousel-control next" 
+                    id="next"
+                    aria-label="Siguiente slide"
+                    aria-controls="carousel-track">
+                <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+            <div class="carousel-indicators" 
+                 id="carousel-indicators" 
+                 role="tablist" 
+                 aria-label="Indicadores del carrusel"></div>
+        </div>
+    </section>
+
+    <!-- Sección de Productos -->
+    <main id="productos" class="products-section parallax" data-speed="0.3" role="main" aria-label="Catálogo de productos">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nuestros Productos</h2>
+                <p>Descubre nuestra selección premium de bebidas</p>
+            </div>
+
+            <!-- Filtros y búsqueda -->
+            <div class="products-controls" role="search" aria-label="Buscar y filtrar productos">
+                <div class="search-container">
+                    <label for="search-input" class="visually-hidden">Buscar productos</label>
+                    <input type="search" 
+                           id="search-input" 
+                           placeholder="Buscar productos..."
+                           aria-label="Buscar productos por nombre"
+                           autocomplete="off">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                </div>
+                <div class="filters" role="group" aria-label="Filtrar por categoría">
+                    <button class="filter-btn active" 
+                            data-filter="todos"
+                            aria-pressed="true">Todos</button>
+                    <button class="filter-btn" 
+                            data-filter="gin"
+                            aria-pressed="false">Gin</button>
+                    <button class="filter-btn" 
+                            data-filter="vino"
+                            aria-pressed="false">Vino</button>
+                    <button class="filter-btn" 
+                            data-filter="licor"
+                            aria-pressed="false">Licor</button>
+                </div>
+            </div>
+
+            <!-- Grid de productos -->
+            <div class="products-grid" 
+                 id="products-grid" 
+                 role="list"
+                 aria-live="polite"
+                 aria-busy="false"
+                 aria-label="Lista de productos">
+                <!-- Los productos se cargarán dinámicamente -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Sección Nosotros -->
+    <section id="nosotros" class="about-section parallax" data-speed="0.2">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Sobre inFusion</h2>
+                    <p>Somos especialistas en recopilar las mejores ofertas del mercado de bebidas. Nuestra misión es conectar a nuestros clientes con productos premium a precios accesibles.</p>
+                    <p>Al organizar con tiempo, todo es más barato. Trabajamos directamente con distribuidores para ofrecerte los mejores precios en una amplia variedad de bebidas.</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h3>Envío Rápido</h3>
+                            <p>Entrega en 24-48 horas</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-medal"></i>
+                            <h3>Calidad Premium</h3>
+                            <p>Productos seleccionados</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-percentage"></i>
+                            <h3>Mejores Precios</h3>
+                            <p>Ofertas exclusivas</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="./IMG/vino.jpg" alt="Nuestras Bebidas">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contacto" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Contáctanos</h2>
+                <p>Estamos aquí para ayudarte con cualquier consulta</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fab fa-whatsapp"></i>
+                        <div>
+                            <h3>WhatsApp</h3>
+                            <p>+54 9 2644 847330</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>infusion.ventadebebidas@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3>Horarios</h3>
+                            <p>Lun - Vie: 9:00 - 18:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <!-- Enlace discreto al admin -->
+    <div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.3; z-index: 999;">
+        <a href="admin-login.html" style="color: white; text-decoration: none; font-size: 12px;">Admin</a>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img src="./Logo/in Fusion.png" alt="inFusion" class="footer-logo">
+                    <p>Tu distribuidor de confianza para bebidas premium</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="https://www.tiktok.com/@In.fusion.bebidas" target="_blank" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                        <a href="https://www.instagram.com/infusion.bebidas/" target="_blank" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61566118048160" target="_blank" aria-label="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="mailto:infusion.ventadebebidas@gmail.com" aria-label="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 inFusion. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Detalles de Producto -->
+    <div id="product-modal" class="modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-overlay" aria-hidden="true"></div>
+        <div class="modal-content" role="document">
+            <button class="modal-close" aria-label="Cerrar detalles del producto">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modal-product-image" src="" alt="">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title" class="modal-product-title"></h2>
+                    <p class="modal-product-category"></p>
+                    <p class="modal-product-price"></p>
+                    <p class="modal-product-description"></p>
+                    <div class="modal-quantity-selector">
+                        <label for="modal-quantity">Cantidad:</label>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" id="modal-qty-minus" aria-label="Disminuir cantidad">
+                                <i class="fas fa-minus" aria-hidden="true"></i>
+                            </button>
+                            <input type="number" 
+                                   id="modal-quantity" 
+                                   value="1" 
+                                   min="1" 
+                                   max="99"
+                                   aria-label="Cantidad a agregar">
+                            <button class="qty-btn" id="modal-qty-plus" aria-label="Aumentar cantidad">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="modal-add-to-cart" id="modal-add-to-cart">
+                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                        Agregar al Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de notificaciones -->
+    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="script-optimized.js"></script>
+</body>
+</html>
