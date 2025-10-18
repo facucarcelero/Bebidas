@@ -2,30 +2,727 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Panel de Administración</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - La Previa</title>
+    <link rel="icon" type="image/svg+xml" href="./Logo/La Previa.jpg">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="admin-styles.css">
+    
+    <!-- Supresión de errores (debe ir primero) -->
+    <script src="./error-suppression.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
+    <!-- Deshabilitar Firebase Auth para evitar errores -->
+    <script src="./firebase-no-auth.js"></script>
+    
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
 </head>
 <body>
-    <div id="login-section">
-        <h1>Admin Login</h1>
-        <input type="text" id="username" placeholder="Usuario">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button id="login-button">Ingresar</button>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <img src="./Logo/La Previa.jpg" alt="La Previa" class="login-logo">
+                <h1>Panel de Administración</h1>
+                <p>Acceso exclusivo para administradores</p>
+            </div>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-user"></i>
+                        Usuario
+                    </label>
+                    <input type="text" id="email" required autocomplete="username" placeholder="tomi o facu">
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Contraseña
+                    </label>
+                    <input type="password" id="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Iniciar Sesión
+                </button>
+                <div id="login-error" class="error-message"></div>
+            </form>
+        </div>
     </div>
 
-    <div id="admin-section" style="display:none;">
-        <h1>Panel de Administración</h1>
-        <button id="logout">Cerrar Sesión</button>
-        <h2>Productos</h2>
-        <ul id="product-list"></ul>
-        <h2>Agregar Producto</h2>
-        <input type="text" id="prod-name" placeholder="Nombre">
-        <input type="text" id="prod-price" placeholder="Precio">
-        <input type="text" id="prod-image" placeholder="URL de imagen">
-        <input type="text" id="prod-details" placeholder="Detalles">
-        <button id="add-product">Agregar</button>
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <!-- Overlay para móviles -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="./Logo/La Previa.jpg" alt="La Previa">
+                <h2>La Previa</h2>
+                <button class="close-sidebar-mobile" id="close-sidebar-mobile" style="display: none;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#productos" class="nav-item" data-section="productos">
+                    <i class="fas fa-boxes"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="#banners" class="nav-item" data-section="banners">
+                    <i class="fas fa-images"></i>
+                    <span>Banners</span>
+                </a>
+                <a href="#configuracion" class="nav-item" data-section="configuracion">
+                    <i class="fas fa-cog"></i>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button id="hamburger-menu" class="hamburger-menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="page-title">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <a href="index.html" target="_blank" class="btn-secondary">
+                        <i class="fas fa-external-link-alt"></i>
+                        Ver Sitio
+                    </a>
+                    <div class="user-info">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="user-email">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="section-dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FF00FF, #FF1493);">
+                            <i class="fas fa-boxes"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-productos">0</h3>
+                            <p>Total Productos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #8B00FF, #FF00FF);">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="productos-activos">0</h3>
+                            <p>Productos Activos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #FF1493, #FF69B4);">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="productos-oferta">0</h3>
+                            <p>En Oferta</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #1A0033, #8B00FF);">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-banners">0</h3>
+                            <p>Banners Activos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="card">
+                        <h3>Acciones Rápidas</h3>
+                        <div class="quick-actions">
+                            <button class="btn-action" data-action="add-category">
+                                <i class="fas fa-tags"></i>
+                                Agregar Categoría
+                            </button>
+                            <button class="btn-action" data-action="add-product">
+                                <i class="fas fa-plus-circle"></i>
+                                Agregar Producto
+                            </button>
+                            <button class="btn-action" data-action="add-banner">
+                                <i class="fas fa-image"></i>
+                                Agregar Banner
+                            </button>
+                            <button class="btn-action" data-action="view-site">
+                                <i class="fas fa-globe"></i>
+                                Ver Sitio Web
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Productos Section -->
+            <section id="section-productos" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Productos</h2>
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="btn-add-category-2" class="btn-secondary">
+                            <i class="fas fa-tags"></i>
+                            Agregar Categoría
+                        </button>
+                        <button id="btn-add-product" class="btn-primary">
+                            <i class="fas fa-plus"></i>
+                            Agregar Producto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categorías disponibles -->
+                <div id="categories-quick-view" class="categories-quick-view" style="margin-bottom: 2rem;">
+                    <!-- Las categorías se cargarán aquí -->
+                </div>
+
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-products" placeholder="Buscar productos...">
+                    </div>
+                    <select id="filter-category" class="filter-select">
+                        <option value="todos">Todas las categorías</option>
+                    </select>
+                    <select id="filter-status" class="filter-select">
+                        <option value="todos">Todos los estados</option>
+                        <option value="activo">Activos</option>
+                        <option value="inactivo">Inactivos</option>
+                        <option value="oferta">En Oferta</option>
+                    </select>
+                </div>
+
+                <div class="products-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Oferta</th>
+                                <th>Destacado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Banners Section -->
+            <section id="section-banners" class="content-section">
+                <div class="section-header">
+                    <h2>Gestión de Banners</h2>
+                    <button id="btn-add-banner" class="btn-primary">
+                        <i class="fas fa-plus"></i>
+                        Agregar Banner
+                    </button>
+                </div>
+
+                <div class="banners-grid" id="banners-grid">
+                    <!-- Banners will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Configuración Section -->
+            <section id="section-configuracion" class="content-section">
+                <div class="section-header">
+                    <h2>Configuración</h2>
+                </div>
+
+                <div class="config-content">
+                    <div class="card">
+                        <h3>Información de Contacto</h3>
+                        <form id="contact-form" class="config-form">
+                            <div class="form-group">
+                                <label>WhatsApp</label>
+                                <input type="text" id="config-whatsapp" placeholder="+54 9 2644 847330">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="config-email" placeholder="infusion.ventadebebidas@gmail.com">
+                            </div>
+                            <button type="submit" class="btn-primary">Guardar Cambios</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Redes Sociales</h3>
+                        <form id="social-form" class="config-form">
+                            <div class="form-group">
+                                <label>Instagram</label>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="url" id="config-instagram" placeholder="https://www.instagram.com/..." style="flex: 1;">
+                                    <button type="button" id="toggle-instagram" class="btn-toggle" data-social="instagram" style="
+                                        background: var(--accent-gradient); 
+                                        color: white; 
+                                        border: none; 
+                                        padding: 0.5rem 1rem; 
+                                        border-radius: 6px; 
+                                        cursor: pointer; 
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                    ">Ocultar</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Facebook</label>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="url" id="config-facebook" placeholder="https://www.facebook.com/..." style="flex: 1;">
+                                    <button type="button" id="toggle-facebook" class="btn-toggle" data-social="facebook" style="
+                                        background: var(--accent-gradient); 
+                                        color: white; 
+                                        border: none; 
+                                        padding: 0.5rem 1rem; 
+                                        border-radius: 6px; 
+                                        cursor: pointer; 
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                    ">Ocultar</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>TikTok</label>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="url" id="config-tiktok" placeholder="https://www.tiktok.com/..." style="flex: 1;">
+                                    <button type="button" id="toggle-tiktok" class="btn-toggle" data-social="tiktok" style="
+                                        background: var(--accent-gradient); 
+                                        color: white; 
+                                        border: none; 
+                                        padding: 0.5rem 1rem; 
+                                        border-radius: 6px; 
+                                        cursor: pointer; 
+                                        font-size: 12px;
+                                        font-weight: 600;
+                                    ">Ocultar</button>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">Guardar Cambios</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <script src="admin.js"></script>
+    <!-- Modal para Agregar/Editar Producto -->
+    <div id="product-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-product-title">Agregar Producto</h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="product-form" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre del Producto *</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría *</label>
+                        <select id="product-category-select" required>
+                            <option value="">-- Seleccionar categoría --</option>
+                        </select>
+                        <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                            💡 Si no ves la categoría, créala primero en la sección "Categorías"
+                        </small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Precio *</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio Original (si está en oferta)</label>
+                        <input type="number" id="product-original-price" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Imagen del Producto (opcional)</label>
+                    
+                    <!-- Selector de archivos -->
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <input type="file" id="product-image-file" accept="image/*" style="
+                            background: var(--gradient-dark);
+                            border: 2px solid var(--primary-color);
+                            border-radius: 8px;
+                            padding: 0.75rem;
+                            color: var(--text-color);
+                            font-size: 14px;
+                        ">
+                        <button type="button" id="clear-image-btn" style="
+                            background: var(--accent-gradient);
+                            border: none;
+                            border-radius: 8px;
+                            padding: 0.75rem 1rem;
+                            color: white;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">Limpiar</button>
+                    </div>
+                    
+                    <!-- Input de URL (alternativo) -->
+                    <input type="text" id="product-image-url" placeholder="O escribe la ruta manualmente: ./IMG/nombre-imagen.jpg" style="margin-bottom: 0.5rem;">
+                    
+                    <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                        💡 <strong>Opción 1:</strong> Selecciona una imagen desde tu dispositivo<br>
+                        💡 <strong>Opción 2:</strong> Coloca la imagen en la carpeta <strong>IMG/</strong> y escribe la ruta<br>
+                        <strong>Puedes agregar la imagen después de crear el producto.</strong>
+                    </small>
+                    <div id="image-preview" class="image-preview" style="margin-top: 1rem;"></div>
+                </div>
+
+                <div class="form-row checkboxes">
+                    <div class="form-check">
+                        <input type="checkbox" id="product-active" checked>
+                        <label for="product-active">Producto Activo (visible en la web)</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="product-offer">
+                        <label for="product-offer">En Oferta</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="product-featured">
+                        <label for="product-featured">Destacado</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar/Editar Banner -->
+    <div id="banner-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modal-banner-title">Agregar Banner</h2>
+                <button class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="banner-form" class="modal-form">
+                <div class="form-group">
+                    <label>Título del Banner *</label>
+                    <input type="text" id="banner-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="banner-description">
+                </div>
+
+                <div class="form-group">
+                    <label>Imagen del Banner *</label>
+                    
+                    <!-- Selector de archivos -->
+                    <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <input type="file" id="banner-image-file" accept="image/*" style="
+                            background: var(--gradient-dark);
+                            border: 2px solid var(--primary-color);
+                            border-radius: 8px;
+                            padding: 0.75rem;
+                            color: var(--text-color);
+                            font-size: 14px;
+                        ">
+                        <button type="button" id="clear-banner-btn" style="
+                            background: var(--accent-gradient);
+                            border: none;
+                            border-radius: 8px;
+                            padding: 0.75rem 1rem;
+                            color: white;
+                            cursor: pointer;
+                            font-weight: 600;
+                        ">Limpiar</button>
+                    </div>
+                    
+                    <!-- Input de URL (alternativo) -->
+                    <input type="text" id="banner-image-url" placeholder="O escribe la ruta manualmente: ./Banner/nombre-banner.jpg">
+                    
+                    <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                        💡 <strong>Opción 1:</strong> Selecciona una imagen desde tu dispositivo<br>
+                        💡 <strong>Opción 2:</strong> Coloca la imagen en la carpeta <strong>Banner/</strong> y escribe la ruta<br>
+                        <strong>Tamaño recomendado:</strong> 1920x600px - Ejemplo: <code>./Banner/belladonna.jpg</code>
+                    </small>
+                    <div id="banner-preview" class="image-preview" style="margin-top: 1rem;"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Orden de visualización</label>
+                    <input type="number" id="banner-order" min="1" value="1">
+                </div>
+
+                <div class="form-check">
+                    <input type="checkbox" id="banner-active" checked>
+                    <label for="banner-active">Banner Activo</label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar Banner
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <!-- Modal para Agregar/Editar Categoría -->
+        <div id="category-modal" class="modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-container" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h2 id="modal-category-title">Agregar Categoría</h2>
+                    <button class="modal-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="category-form" class="modal-form">
+                    <div class="form-group">
+                        <label>Nombre de la Categoría *</label>
+                        <input type="text" 
+                               id="category-name" 
+                               required 
+                               placeholder="Ej: gin, whisky, vodka, cerveza">
+                        <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                            💡 Usa minúsculas y sin espacios (se capitalizará automáticamente)
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ícono (opcional)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div>
+                                <div style="
+                                    background: var(--gradient-dark); 
+                                    border: 2px solid var(--primary-color); 
+                                    border-radius: 8px; 
+                                    padding: 1rem;
+                                    max-height: 200px;
+                                    overflow-y: auto;
+                                ">
+                                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
+                                        <button type="button" class="icon-option" data-icon="" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">❌</button>
+                                        <button type="button" class="icon-option" data-icon="🍷" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🍷</button>
+                                        <button type="button" class="icon-option" data-icon="🥂" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🥂</button>
+                                        <button type="button" class="icon-option" data-icon="🥃" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🥃</button>
+                                        <button type="button" class="icon-option" data-icon="🍸" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🍸</button>
+                                        <button type="button" class="icon-option" data-icon="🍺" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🍺</button>
+                                        <button type="button" class="icon-option" data-icon="☕" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">☕</button>
+                                        <button type="button" class="icon-option" data-icon="💧" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">💧</button>
+                                        <button type="button" class="icon-option" data-icon="🥤" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🥤</button>
+                                        <button type="button" class="icon-option" data-icon="🫧" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🫧</button>
+                                        <button type="button" class="icon-option" data-icon="🍦" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🍦</button>
+                                        <button type="button" class="icon-option" data-icon="🌿" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🌿</button>
+                                        <button type="button" class="icon-option" data-icon="🔥" style="
+                                            background: rgba(255,255,255,0.1); 
+                                            border: 1px solid var(--primary-color); 
+                                            border-radius: 6px; 
+                                            padding: 0.5rem; 
+                                            font-size: 1.5rem; 
+                                            cursor: pointer;
+                                            transition: all 0.3s ease;
+                                        ">🔥</button>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="category-icon" value="">
+                            </div>
+                            <div id="icon-preview" style="
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                background: var(--gradient-dark); 
+                                border: 2px solid var(--primary-color); 
+                                border-radius: 8px; 
+                                padding: 1rem;
+                                font-size: 3rem;
+                                min-height: 80px;
+                                color: white;
+                            ">
+                                <span id="preview-icon">❓</span>
+                            </div>
+                        </div>
+                        <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                            💡 Haz clic en un ícono para seleccionarlo
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Descripción (opcional)</label>
+                        <textarea id="category-description" 
+                                  rows="2" 
+                                  placeholder="Breve descripción de la categoría"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary modal-close">Cancelar</button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Categoría
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Admin Script -->
+    <script src="admin-panel.js"></script>
 </body>
 </html>
+

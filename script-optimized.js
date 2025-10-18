@@ -1,4 +1,4 @@
-// ===== INFUSION - JAVASCRIPT OPTIMIZADO =====
+// ===== LA PREVIA - JAVASCRIPT OPTIMIZADO =====
 // Version: 2.0 - Completamente mejorado para rendimiento y UX
 
 'use strict';
@@ -9,8 +9,115 @@ const AppState = {
     currentFilter: 'todos',
     currentSearch: '',
     isLoading: true,
-    products: []
+    products: [],
+    useFirebase: false
 };
+
+// ===== FIREBASE INITIALIZATION =====
+let db = null;
+try {
+    if (typeof firebase !== 'undefined' && typeof firebaseConfig !== 'undefined') {
+        console.log('🔥 Inicializando Firebase...');
+        console.log('Config:', firebaseConfig);
+        
+        // Verificar si Firebase ya está inicializado
+        if (firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+        } else {
+            console.log('⚠️ Firebase ya está inicializado');
+        }
+        
+        db = firebase.firestore();
+        AppState.useFirebase = true;
+        
+        // Configurar Firestore para mejor rendimiento
+        db.settings({
+            cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
+        });
+        
+        // Suprimir errores específicos de Firebase que no afectan la funcionalidad
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+        
+        console.error = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('CONFIGURATION_NOT_FOUND') || 
+                message.includes('identitytoolkit') ||
+                message.includes('getProjectConfig') ||
+                message.includes('400 (Bad Request)') ||
+                message.includes('googleapis.com')) {
+                // Suprimir estos errores específicos
+                return;
+            }
+            originalConsoleError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            const message = args.join(' ');
+            if (message.includes('CONFIGURATION_NOT_FOUND') || 
+                message.includes('identitytoolkit') ||
+                message.includes('getProjectConfig') ||
+                message.includes('400 (Bad Request)') ||
+                message.includes('googleapis.com')) {
+                // Suprimir estos warnings específicos
+                return;
+            }
+            originalConsoleWarn.apply(console, args);
+        };
+        
+        // Interceptar errores de red
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const url = args[0];
+            if (url && url.includes('googleapis.com') && url.includes('getProjectConfig')) {
+                // Suprimir esta petición específica
+                return Promise.reject(new Error('Request suppressed'));
+            }
+            return originalFetch.apply(this, args);
+        };
+        
+        // Interceptar XMLHttpRequest
+        const originalXHROpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...args) {
+            if (url && url.includes('googleapis.com') && url.includes('getProjectConfig')) {
+                // Suprimir esta petición específica
+                this._suppressed = true;
+                return;
+            }
+            return originalXHROpen.call(this, method, url, ...args);
+        };
+        
+        const originalXHRSend = XMLHttpRequest.prototype.send;
+        XMLHttpRequest.prototype.send = function(...args) {
+            if (this._suppressed) {
+                return;
+            }
+            return originalXHRSend.apply(this, args);
+        };
+        
+        console.log('✅ Firebase inicializado correctamente');
+    } else {
+        console.log('❌ Firebase o firebaseConfig no están disponibles');
+        console.log('firebase:', typeof firebase);
+        console.log('firebaseConfig:', typeof firebaseConfig);
+        AppState.useFirebase = false;
+    }
+} catch (error) {
+    console.log('❌ Error inicializando Firebase:', error);
+    console.log('Código de error:', error.code);
+    console.log('Mensaje:', error.message);
+    AppState.useFirebase = false;
+    
+    // Si es un error de configuración, mostrar ayuda
+    if (error.code === 'app/invalid-credential') {
+        console.error('🔧 Error: Las credenciales de Firebase son inválidas');
+        console.error('Verifica que la configuración en firebase-config.js sea correcta');
+    } else if (error.code === 'app/duplicate-app') {
+        console.warn('⚠️ Firebase ya está inicializado, continuando...');
+        AppState.useFirebase = true;
+        db = firebase.firestore();
+    }
+}
 
 // ===== UTILIDADES =====
 const Utils = {
@@ -311,7 +418,7 @@ const CartManager = {
 
     save() {
         try {
-            localStorage.setItem('infusion_cart', JSON.stringify(AppState.cart));
+            localStorage.setItem('laprevia_cart', JSON.stringify(AppState.cart));
         } catch (e) {
             console.error('Error al guardar carrito:', e);
         }
@@ -319,7 +426,7 @@ const CartManager = {
 
     load() {
         try {
-            const saved = localStorage.getItem('infusion_cart');
+            const saved = localStorage.getItem('laprevia_cart');
             if (saved) {
                 AppState.cart = JSON.parse(saved);
                 this.update();
@@ -336,7 +443,7 @@ const CartManager = {
             return;
         }
 
-        let message = "Hola inFusion! Me gustaría consultar el stock de los siguientes productos:\n\n";
+        let message = "Hola La Previa! Me gustaría consultar el stock de los siguientes productos:\n\n";
         let total = 0;
 
         for (const [productId, item] of Object.entries(AppState.cart)) {
@@ -349,6 +456,24 @@ const CartManager = {
         const phoneNumber = "+5492644127229";
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    },
+
+    showConfirmModal() {
+        const modal = document.getElementById('confirm-modal');
+        if (modal) {
+            modal.classList.add('show');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+    },
+
+    hideConfirmModal() {
+        const modal = document.getElementById('confirm-modal');
+        if (modal) {
+            modal.classList.remove('show');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
     },
 
     toggleVisibility() {
@@ -390,6 +515,49 @@ const CartManager = {
             checkoutButton.addEventListener('click', () => this.sendToWhatsApp());
         }
 
+        // Botón vaciar carrito
+        const clearCartButton = document.getElementById('clear-cart');
+        if (clearCartButton) {
+            clearCartButton.addEventListener('click', () => {
+                if (Object.keys(AppState.cart).length === 0) {
+                    ToastManager.show('El carrito ya está vacío', 'info');
+                    return;
+                }
+                
+                this.showConfirmModal();
+            });
+        }
+
+        // Modal de confirmación
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmClose = document.getElementById('confirm-close');
+        const confirmCancel = document.getElementById('confirm-cancel');
+        const confirmOk = document.getElementById('confirm-ok');
+
+        if (confirmClose) {
+            confirmClose.addEventListener('click', () => this.hideConfirmModal());
+        }
+
+        if (confirmCancel) {
+            confirmCancel.addEventListener('click', () => this.hideConfirmModal());
+        }
+
+        if (confirmOk) {
+            confirmOk.addEventListener('click', () => {
+                this.clear();
+                this.hideConfirmModal();
+            });
+        }
+
+        // Cerrar modal al hacer clic en el overlay
+        if (confirmModal) {
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    this.hideConfirmModal();
+                }
+            });
+        }
+
         // Cerrar al hacer clic fuera
         document.addEventListener('click', (e) => {
             const cartContainer = document.querySelector('.cart-container');
@@ -407,232 +575,59 @@ const CartManager = {
 
 // ===== GESTOR DE PRODUCTOS =====
 const ProductManager = {
-    products: [
-        {
-            id: 1,
-            name: "Gin Belladonna",
-            price: 25000,
-            image: "./IMG/Gin Belladonna.jpg",
-            category: "gin",
-            description: "El Gin Belladonna combina un perfil de enebro con toques florales y cítricos, destacando por su cambio de color de lila a rosa intenso al mezclarlo con tónica. Una experiencia visual y sensorial única."
-        },
-        {
-            id: 2,
-            name: "Cordero Con Piel de Lobo Malbec",
-            price: 5500,
-            image: "./IMG/Cordero Con Piel de Lobo Malbec.jpg",
-            category: "vino",
-            description: "Vino tinto Malbec con notas de frutas maduras y taninos suaves. Ideal para acompañar carnes rojas y quesos."
-        },
-        {
-            id: 3,
-            name: "EL GORDO MOTONETA MALBEC 750CC",
-            price: 5500,
-            image: "./IMG/EL GORDO MOTONETA MALBEC 750CC.jpg",
-            category: "vino",
-            description: "Malbec de alta calidad con cuerpo y carácter distintivo. Notas de ciruelas y especias."
-        },
-        {
-            id: 4,
-            name: "HIERBA MALA GINEBRA X 1000 CC",
-            price: 23500,
-            image: "./IMG/HIERBA MALA GINEBRA X 1000 CC.jpg",
-            category: "gin",
-            description: "Ginebra artesanal con hierbas seleccionadas y botánica única. Perfil aromático complejo y refrescante."
-        },
-        {
-            id: 5,
-            name: "CAJA X 6 UNIDADES GINEBRA HIERBA MALA X 1 LT",
-            price: 119000,
-            image: "./IMG/CAJA X 6 UNIDADES GINEBRA HIERBA MALA X 1 LT.jpg",
-            category: "gin",
-            description: "Pack de 6 unidades de ginebra Hierba Mala de 1 litro cada una. Precio especial por cantidad."
-        },
-        {
-            id: 6,
-            name: "NICASIA RED BLEND ESTUCHE X2 X 750 CC",
-            price: 20999,
-            image: "./IMG/NICASIA RED BLEND ESTUCHE X2 X 750 CC.jpg",
-            category: "vino",
-            description: "Estuche elegante con dos botellas de vino tinto blend premium. Perfecto para regalo."
-        },
-        {
-            id: 7,
-            name: "EL RELATOR CABERNET FRANC",
-            price: 9900,
-            image: "./IMG/EL RELATOR CABERNET FRANC.JPG",
-            category: "vino",
-            description: "Cabernet Franc con notas de pimiento verde y frutas rojas. Elegante y estructurado."
-        },
-        {
-            id: 8,
-            name: "CAJA X 6 UNIDADES GIN BELLADONNA X 1 LT",
-            price: 126700,
-            image: "./IMG/CAJA X 6 UNIDADES GIN BELLADONNA X 1 LT.jpg",
-            category: "gin",
-            description: "Pack de 6 unidades de Gin Belladonna de 1 litro cada una. El mejor precio."
-        },
-        {
-            id: 9,
-            name: "EL RELATOR EXTRA BRUT",
-            price: 10300,
-            image: "./IMG/EL RELATOR EXTRA BRUT.jpg",
-            category: "vino",
-            description: "Champagne extra brut con burbujas finas y sabor seco. Ideal para celebraciones."
-        },
-        {
-            id: 10,
-            name: "EL PORVENIR - ROSA ROSA",
-            price: 7200,
-            image: "./IMG/EL PORVENIR - ROSA ROSA.jpg",
-            category: "vino",
-            description: "Vino rosado con notas florales y frutales refrescantes. Perfecto para el verano."
-        },
-        {
-            id: 11,
-            name: "EL PORVENIR - AMAUTA ABSOLUTO TANNAT",
-            price: 11000,
-            image: "./IMG/EL PORVENIR - AMAUTA ABSOLUTO TANNAT.jpg",
-            category: "vino",
-            description: "Tannat de alta expresión con taninos potentes y estructura compleja. Para paladares exigentes."
-        },
-        {
-            id: 12,
-            name: "ELEGIDOS DE SEBASTIAN ZUCCARDI ESTUCHE DE MADERA X4",
-            price: 257000,
-            image: "./IMG/ELEGIDOS DE SEBASTIAN ZUCCARDI ESTUCHE DE MADERA X4.jpg",
-            category: "vino",
-            description: "Estuche de madera premium con 4 vinos seleccionados por Sebastián Zuccardi. Colección exclusiva."
-        },
-        {
-            id: 13,
-            name: "UN MUNDO CHIQUITO MALBEC",
-            price: 5000,
-            image: "./IMG/UN MUNDO CHIQUITO MALBEC.jpg",
-            category: "vino",
-            description: "Malbec joven y accesible con frutas rojas y taninos suaves. Excelente relación precio-calidad."
-        },
-        {
-            id: 14,
-            name: "UN MUNDO CHIQUITO CORTE DE BLANCAS X 750 CC",
-            price: 5000,
-            image: "./IMG/UN MUNDO CHIQUITO CORTE DE BLANCAS X 750 CC.jpg",
-            category: "vino",
-            description: "Blend de uvas blancas con notas cítricas y minerales. Fresco y aromático."
-        },
-        {
-            id: 15,
-            name: "PYROS APPELLATION MALBEC X 750 CC",
-            price: 11000,
-            image: "./IMG/PYROS APPELLATION MALBEC X 750 CC.jpg",
-            category: "vino",
-            description: "Malbec de altura con notas de ciruelas y especias. Vino de alta gama."
-        },
-        {
-            id: 16,
-            name: "PYROS APPELLATION SYRAH X 750 CC",
-            price: 11000,
-            image: "./IMG/PYROS APPELLATION SYRAH X 750 CC.jpg",
-            category: "vino",
-            description: "Syrah de altura con notas de pimienta negra y frutas oscuras. Complejo y elegante."
-        },
-        {
-            id: 17,
-            name: "PYROS APPELLATION CHARDONNAY X 750 CC",
-            price: 11000,
-            image: "./IMG/PYROS APPELLATION CHARDONNAY X 750 CC.jpg",
-            category: "vino",
-            description: "Chardonnay de altura con notas de manzana verde y vainilla. Equilibrado y persistente."
-        },
-        {
-            id: 18,
-            name: "LICOR DE CAÑA LEGUI X 750 CC",
-            price: 6000,
-            image: "./IMG/LICOR DE CAÑA LEGUI X 750 CC.jpg",
-            category: "licor",
-            description: "Licor de caña artesanal con notas dulces y cálidas. Tradición argentina."
-        },
-        {
-            id: 19,
-            name: "JÄGERMEISTER X 700 CC",
-            price: 26000,
-            image: "./IMG/JÄGERMEISTER X 700 CC.jpg",
-            category: "licor",
-            description: "Licor herbal alemán con 56 hierbas y especias seleccionadas. Sabor único e inconfundible."
-        },
-        {
-            id: 20,
-            name: "JAGËRMEISTER X 1750 CC",
-            price: 64000,
-            image: "./IMG/JAGËRMEISTER X 1750 CC.jpg",
-            category: "licor",
-            description: "Botella grande de Jägermeister, perfecta para eventos y reuniones."
-        },
-        {
-            id: 21,
-            name: "BEEFEATER GIN X 700 CC",
-            price: 24300,
-            image: "./IMG/BEEFEATER GIN X 700 CC.jpg",
-            category: "gin",
-            description: "Gin londinense clásico con notas de enebro y cítricos. Elegante y versátil."
-        },
-        {
-            id: 22,
-            name: "BOMBAY GIN X 750 CC",
-            price: 28000,
-            image: "./IMG/BOMBAY GIN X 750 CC.jpg",
-            category: "gin",
-            description: "Gin premium con botánica exótica y sabor refinado. Destilado en alambiques de cobre."
-        },
-        {
-            id: 23,
-            name: "CONTRAVIENTO BLEND DE TINTAS X6",
-            price: 24000,
-            image: "./IMG/CONTRAVIENTO BLEND DE TINTAS X6.jpg",
-            category: "vino",
-            description: "Pack de 6 vinos tintos blend de alta calidad. Ideal para eventos."
-        },
-        {
-            id: 24,
-            name: "Vino Portillo Cabernet Sauvignon x3",
-            price: 6500,
-            image: "./IMG/Vino Portillo Cabernet Sauvignon x3.jpg",
-            category: "vino",
-            description: "Pack de 3 botellas de Cabernet Sauvignon de Portillo. Calidad consistente."
-        },
-        {
-            id: 25,
-            name: "Vino Tinto Elementos Malbec x3",
-            price: 9900,
-            image: "./IMG/Vino Tinto Elementos Malbec x3.jpg",
-            category: "vino",
-            description: "Pack de 3 botellas de Malbec de la línea Elementos. Expresión pura."
-        },
-        {
-            id: 26,
-            name: "Las Perdices Malbec x3",
-            price: 19000,
-            image: "./IMG/Las Perdices Malbec x3.jpg",
-            category: "vino",
-            description: "Pack de 3 botellas de Malbec de Las Perdices. Premium quality."
-        },
-        {
-            id: 27,
-            name: "HEREDERO GIN AÑEJO X 700 CC",
-            price: 25100,
-            image: "./IMG/HEREDERO GIN AÑEJO X 700 CC.jpg",
-            category: "gin",
-            description: "Gin añejo con notas de roble y especias complejas. Único en su categoría."
-        },
-        {
-            id: 28,
-            name: "ACONCAGUA GIN X750CC CAJA x6",
-            price: 73500,
-            image: "./IMG/ACONCAGUA GIN X750CC CAJA x6.jpg",
-            category: "gin",
-            description: "Pack de 6 botellas de Gin Aconcagua de 750cc cada una. Inspirado en los Andes."
+    // Función para cargar productos desde Firebase
+    async loadFromFirebase() {
+        console.log('🔄 Intentando cargar productos desde Firebase...');
+        console.log('AppState.useFirebase:', AppState.useFirebase);
+        console.log('db disponible:', !!db);
+        
+        if (!AppState.useFirebase || !db) {
+            console.log('❌ Firebase no disponible, usando productos locales');
+            return null;
         }
-    ],
+
+        try {
+            console.log('📡 Consultando colección "productos"...');
+            const snapshot = await db.collection('productos')
+                .where('active', '==', true)
+                .orderBy('createdAt', 'desc')
+                .get();
+            
+            console.log('📊 Documentos encontrados:', snapshot.size);
+            
+            if (snapshot.empty) {
+                console.log('⚠️ No hay productos activos en Firebase');
+                return null;
+            }
+
+            const firebaseProducts = snapshot.docs.map(doc => {
+                const data = doc.data();
+                console.log('📦 Producto:', doc.id, data.name, data.category);
+                
+                // LIMPIAR placeholder.jpg automáticamente
+                if (data.image && (data.image.includes('placeholder.jpg') || data.image.includes('IMG/placeholder'))) {
+                    console.log(`🧹 Limpiando placeholder.jpg de: ${data.name}`);
+                    data.image = '';
+                }
+                
+                return {
+                    id: doc.id,
+                    ...data
+                };
+            });
+
+            console.log(`✅ ${firebaseProducts.length} productos cargados desde Firebase`);
+            return firebaseProducts;
+        } catch (error) {
+            console.error('❌ Error cargando productos desde Firebase:', error);
+            console.error('Detalles del error:', error.message);
+            return null;
+        }
+    },
+
+    // Productos locales (fallback si Firebase no está disponible)
+    // Vacío - todos los productos se cargarán desde Firebase usando el panel de administración
+    localProducts: [],
 
     getFiltered() {
         return this.products.filter(product => {
@@ -681,19 +676,29 @@ const ProductManager = {
         card.setAttribute('role', 'listitem');
         card.setAttribute('tabindex', '0');
         
-        const encodedImage = Utils.encodeImagePath(product.image);
+        // Solo mostrar imagen si existe y no está vacía
+        const hasImage = product.image && product.image.trim() !== '';
+        const imageHtml = hasImage ? 
+            `<img src="${Utils.encodeImagePath(product.image)}" 
+                  alt="${product.name}" 
+                  loading="lazy" 
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+             <div class="no-image-placeholder" style="display: none; align-items: center; justify-content: center; height: 200px; background: var(--gradient-dark); border-radius: 8px; color: var(--text-light);">
+                 <i class="fas fa-image" style="font-size: 2rem; opacity: 0.5;"></i>
+             </div>` :
+            `<div class="no-image-placeholder" style="display: flex; align-items: center; justify-content: center; height: 200px; background: var(--gradient-dark); border-radius: 8px; color: var(--text-light);">
+                 <i class="fas fa-image" style="font-size: 2rem; opacity: 0.5;"></i>
+             </div>`;
         
         card.innerHTML = `
-            <img src="${encodedImage}" 
-                 alt="${product.name}" 
-                 loading="lazy" 
-                 onerror="this.src='./IMG/vino.jpg';">
-            <div class="product-info">
-                <h3 class="product-title">${product.name}</h3>
-                <p class="product-price" aria-label="Precio: ${Utils.formatPrice(product.price)} pesos">$${Utils.formatPrice(product.price)}</p>
+            ${imageHtml}
+            <div class="product-info" style="background: rgba(255, 255, 255, 0.95); padding: 1rem; border-radius: 0 0 8px 8px;">
+                <h3 class="product-title" style="color: #1A0033; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.1rem;">${product.name}</h3>
+                <p class="product-price" aria-label="Precio: ${Utils.formatPrice(product.price)} pesos" style="color: var(--secondary-color); font-size: 1.3rem; font-weight: 800; margin-bottom: 1rem;">$${Utils.formatPrice(product.price)}</p>
                 <button class="add-to-cart" 
                         data-product-id="${product.id}"
-                        aria-label="Agregar ${product.name} al carrito">
+                        aria-label="Agregar ${product.name} al carrito"
+                        style="background: var(--accent-gradient); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; width: 100%;">
                     <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                     Agregar al Carrito
                 </button>
@@ -725,16 +730,127 @@ const ProductManager = {
         return card;
     },
 
-    init() {
+    async init() {
+        // Intentar cargar productos desde Firebase
+        const firebaseProducts = await this.loadFromFirebase();
+        
+        if (firebaseProducts && firebaseProducts.length > 0) {
+            // Usar productos de Firebase
+            this.products = firebaseProducts;
+            console.log('Usando productos desde Firebase');
+        } else {
+            // Usar productos locales como fallback
+            this.products = this.localProducts;
+            console.log('Usando productos locales');
+        }
+        
         AppState.products = this.products;
+        
+        // Generar filtros dinámicos según los productos cargados
+        if (typeof FilterManager !== 'undefined' && FilterManager.generateCategoryFilters) {
+            FilterManager.generateCategoryFilters();
+        }
+        
         this.render();
+    },
+
+    async reloadFromFirebase() {
+        console.log('🔄 Recargando productos desde Firebase...');
+        const firebaseProducts = await this.loadFromFirebase();
+        
+        if (firebaseProducts && firebaseProducts.length > 0) {
+            this.products = firebaseProducts;
+            AppState.products = this.products;
+            console.log(`✅ ${firebaseProducts.length} productos recargados desde Firebase`);
+            
+            // Regenerar filtros
+            if (typeof FilterManager !== 'undefined' && FilterManager.generateCategoryFilters) {
+                FilterManager.generateCategoryFilters();
+            }
+            
+            // Re-renderizar
+            this.render();
+        }
+    },
+
+    // Función de prueba para verificar conexión a Firebase
+    async testFirebaseConnection() {
+        console.log('🧪 Probando conexión a Firebase...');
+        try {
+            if (!db) {
+                console.log('❌ No hay conexión a la base de datos');
+                return false;
+            }
+            
+            // Intentar leer cualquier colección para probar la conexión
+            const testSnapshot = await db.collection('productos').limit(1).get();
+            console.log('✅ Conexión a Firebase exitosa');
+            console.log('📊 Productos en la base de datos:', testSnapshot.size);
+            return true;
+        } catch (error) {
+            console.error('❌ Error de conexión a Firebase:', error);
+            return false;
+        }
+    },
+
+    // Cargar configuración de contacto
+    async loadContactConfig() {
+        await loadContactConfig();
+    },
+
+    // Cargar configuración de redes sociales
+    async loadSocialConfig() {
+        await loadSocialConfig();
     }
 };
 
 // ===== FILTROS Y BÚSQUEDA =====
 const FilterManager = {
-    init() {
-        // Filtros de categoría
+    generateCategoryFilters() {
+        const filtersContainer = document.getElementById('category-filters');
+        if (!filtersContainer) return;
+
+        // Obtener categorías únicas de los productos actuales
+        const categories = new Set();
+        AppState.products.forEach(product => {
+            if (product.category) {
+                categories.add(product.category);
+            }
+        });
+
+        // Siempre mostrar "Todos" si hay productos
+        let filtersHTML = '';
+        if (AppState.products.length > 0) {
+            filtersHTML = `
+                <button class="filter-btn active" 
+                        data-filter="todos"
+                        aria-pressed="true">Todos</button>
+            `;
+
+            // Agregar botones para cada categoría que existe
+            const categoryNames = {
+                'gin': 'Gin',
+                'vino': 'Vino',
+                'licor': 'Licor'
+            };
+
+            categories.forEach(category => {
+                const displayName = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1);
+                filtersHTML += `
+                    <button class="filter-btn" 
+                            data-filter="${category}"
+                            aria-pressed="false">${displayName}</button>
+                `;
+            });
+        }
+
+        filtersContainer.innerHTML = filtersHTML;
+
+        // Agregar event listeners a los nuevos botones
+        this.attachFilterListeners();
+    },
+
+    attachFilterListeners() {
         const filterButtons = document.querySelectorAll('.filter-btn');
         filterButtons.forEach(button => {
             button.addEventListener('click', () => {
@@ -751,6 +867,10 @@ const FilterManager = {
                 ProductManager.render();
             });
         });
+    },
+
+    init() {
+        // Los filtros se generarán dinámicamente después de cargar productos
 
         // Búsqueda
         const searchInput = document.getElementById('search-input');
@@ -893,29 +1013,59 @@ const MobileMenuManager = {
         
         if (!hamburger || !navMobile) return;
 
-        hamburger.addEventListener('click', () => {
+        // Función para cerrar el menú
+        const closeMenu = () => {
+            hamburger.classList.remove('active');
+            hamburger.setAttribute('aria-expanded', 'false');
+            navMobile.classList.remove('show');
+            navMobile.classList.remove('active');
+            navMobile.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        };
+
+        // Abrir/cerrar menú con el botón hamburguesa
+        hamburger.addEventListener('click', (e) => {
+            e.stopPropagation(); // Evitar que el evento se propague al document
             const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
             
             hamburger.classList.toggle('active');
             hamburger.setAttribute('aria-expanded', !isExpanded);
             
             navMobile.classList.toggle('show');
+            navMobile.classList.toggle('active');
             navMobile.setAttribute('aria-hidden', isExpanded);
             
             // Prevenir scroll cuando el menú está abierto
             document.body.style.overflow = navMobile.classList.contains('show') ? 'hidden' : '';
         });
 
+        // Prevenir que clicks dentro del menú lo cierren
+        navMobile.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
         // Cerrar al hacer clic en un enlace
-        const navLinks = navMobile.querySelectorAll('.nav-link');
+        const navLinks = navMobile.querySelectorAll('.nav-link, a');
         navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                hamburger.setAttribute('aria-expanded', 'false');
-                navMobile.classList.remove('show');
-                navMobile.setAttribute('aria-hidden', 'true');
-                document.body.style.overflow = '';
-            });
+            link.addEventListener('click', closeMenu);
+        });
+
+        // Cerrar al hacer clic fuera del menú
+        document.addEventListener('click', (e) => {
+            const isMenuOpen = navMobile.classList.contains('show') || navMobile.classList.contains('active');
+            const clickedInsideMenu = navMobile.contains(e.target);
+            const clickedHamburger = hamburger.contains(e.target);
+            
+            if (isMenuOpen && !clickedInsideMenu && !clickedHamburger) {
+                closeMenu();
+            }
+        });
+
+        // Cerrar con la tecla ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && (navMobile.classList.contains('show') || navMobile.classList.contains('active'))) {
+                closeMenu();
+            }
         });
     }
 };
@@ -982,13 +1132,205 @@ const HeaderManager = {
     }
 };
 
+// ===== UTILIDADES ADICIONALES =====
+function updateCurrentYear() {
+    const yearElement = document.getElementById('current-year');
+    if (yearElement) {
+        const currentYear = new Date().getFullYear();
+        yearElement.textContent = currentYear;
+        console.log(`📅 Año actualizado automáticamente: ${currentYear}`);
+    }
+}
+
+// Cargar configuración de contacto desde Firebase
+async function loadContactConfig() {
+    if (!AppState.useFirebase || !db) {
+        console.log('Firebase no disponible para cargar configuración de contacto');
+        return;
+    }
+    
+    try {
+        const doc = await db.collection('configuracion').doc('contacto').get();
+        if (doc.exists) {
+            const data = doc.data();
+            updateContactDisplay(data);
+            console.log('✅ Configuración de contacto cargada desde Firebase');
+        }
+    } catch (error) {
+        console.error('Error cargando configuración de contacto:', error);
+    }
+}
+
+// Actualizar la visualización de contacto
+function updateContactDisplay(data) {
+    // Actualizar WhatsApp
+    const whatsappElement = document.getElementById('contact-whatsapp');
+    if (whatsappElement && data.whatsapp) {
+        whatsappElement.textContent = data.whatsapp;
+    }
+    
+    // Actualizar Email
+    const emailElement = document.getElementById('contact-email');
+    if (emailElement && data.email) {
+        emailElement.textContent = data.email;
+    }
+    
+    // Actualizar enlace de email en redes sociales
+    const socialEmailElement = document.getElementById('social-email');
+    if (socialEmailElement && data.email) {
+        socialEmailElement.href = `mailto:${data.email}`;
+    }
+}
+
+// Cargar configuración de redes sociales desde Firebase
+async function loadSocialConfig() {
+    if (!AppState.useFirebase || !db) {
+        console.log('Firebase no disponible para cargar configuración de redes sociales');
+        return;
+    }
+    
+    try {
+        const doc = await db.collection('configuracion').doc('redes-sociales').get();
+        if (doc.exists) {
+            const data = doc.data();
+            updateSocialDisplay(data);
+            console.log('✅ Configuración de redes sociales cargada desde Firebase');
+        }
+    } catch (error) {
+        console.error('Error cargando configuración de redes sociales:', error);
+    }
+}
+
+// Actualizar la visualización de redes sociales
+function updateSocialDisplay(data) {
+    const socials = [
+        { key: 'tiktok', elementId: 'social-tiktok' },
+        { key: 'instagram', elementId: 'social-instagram' },
+        { key: 'facebook', elementId: 'social-facebook' }
+    ];
+    
+    socials.forEach(social => {
+        const element = document.getElementById(social.elementId);
+        if (element) {
+            // Verificar si está oculto en la configuración
+            const isHidden = data[`${social.key}_hidden`] === true;
+            const hasUrl = data[social.key] && data[social.key].trim() !== '';
+            
+            console.log(`🔍 ${social.key}: hidden=${isHidden}, hasUrl=${hasUrl}, url=${data[social.key] || 'sin URL'}`);
+            
+            // Mostrar solo si tiene URL Y no está marcado como oculto
+            if (hasUrl && !isHidden) {
+                // Mostrar red social
+                element.href = data[social.key];
+                element.style.removeProperty('display');
+                element.style.removeProperty('visibility');
+                element.style.removeProperty('opacity');
+                console.log(`✅ Mostrando ${social.key}`);
+            } else {
+                // Ocultar red social (porque no tiene URL o está marcado como oculto)
+                element.style.display = 'none';
+                if (isHidden) {
+                    console.log(`🔒 ${social.key} ocultado por configuración`);
+                } else if (!hasUrl) {
+                    console.log(`⚠️ ${social.key} oculto (sin URL configurada)`);
+                }
+            }
+        }
+    });
+}
+
+// Configurar listeners en tiempo real para actualizaciones automáticas
+function setupRealtimeListeners() {
+    if (!AppState.useFirebase || !db) {
+        console.log('Firebase no disponible para listeners en tiempo real');
+        return;
+    }
+
+    console.log('🔄 Configurando listeners en tiempo real...');
+
+    // Listener para configuración de contacto
+    db.collection('configuracion').doc('contacto').onSnapshot((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            console.log('📞 Actualización en tiempo real - Contacto:', data);
+            updateContactDisplay(data);
+            
+            // Mostrar notificación de actualización
+            if (typeof ToastManager !== 'undefined') {
+                ToastManager.show('Información de contacto actualizada', 'info', 3000);
+            }
+        }
+    }, (error) => {
+        console.error('Error en listener de contacto:', error);
+    });
+
+    // Listener para configuración de redes sociales
+    db.collection('configuracion').doc('redes-sociales').onSnapshot((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            console.log('🌐 Actualización en tiempo real - Redes Sociales:', data);
+            updateSocialDisplay(data);
+            
+            // Mostrar notificación de actualización
+            if (typeof ToastManager !== 'undefined') {
+                ToastManager.show('Redes sociales actualizadas', 'info', 3000);
+            }
+        }
+    }, (error) => {
+        console.error('Error en listener de redes sociales:', error);
+    });
+
+    // Listener para productos (actualización en tiempo real)
+    db.collection('productos').where('active', '==', true).onSnapshot((snapshot) => {
+        console.log('🛍️ Actualización en tiempo real - Productos:', snapshot.size, 'productos');
+        
+        const products = snapshot.docs.map(doc => {
+            const data = doc.data();
+            
+            // LIMPIAR placeholder.jpg automáticamente
+            if (data.image && (data.image.includes('placeholder.jpg') || data.image.includes('IMG/placeholder'))) {
+                console.log(`🧹 Limpiando placeholder.jpg de: ${data.name}`);
+                data.image = '';
+            }
+            
+            return {
+                id: doc.id,
+                ...data
+            };
+        });
+        
+        AppState.products = products;
+        ProductManager.products = products;
+        
+        // Regenerar filtros
+        if (typeof FilterManager !== 'undefined' && FilterManager.generateCategoryFilters) {
+            FilterManager.generateCategoryFilters();
+        }
+        
+        // Re-renderizar productos
+        ProductManager.render();
+        
+        // Mostrar notificación de actualización
+        if (typeof ToastManager !== 'undefined') {
+            ToastManager.show('Catálogo de productos actualizado', 'info', 3000);
+        }
+    }, (error) => {
+        console.error('Error en listener de productos:', error);
+    });
+
+    console.log('✅ Listeners en tiempo real configurados correctamente');
+}
+
 // ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 inFusion - Iniciando aplicación optimizada v2.0');
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 La Previa - Iniciando aplicación optimizada v2.0');
 
     try {
+        // Probar conexión a Firebase primero
+        await ProductManager.testFirebaseConnection();
+        
         // Inicializar todos los módulos
-        ProductManager.init();
+        await ProductManager.init(); // Esperar a que carguen los productos (Firebase o local)
         CartManager.init();
         ProductModal.init();
         FilterManager.init();
@@ -996,6 +1338,19 @@ document.addEventListener('DOMContentLoaded', () => {
         MobileMenuManager.init();
         SmoothScroll.init();
         HeaderManager.init();
+        
+        // Hacer ProductManager disponible globalmente para el admin
+        window.ProductManager = ProductManager;
+
+        // Actualizar año automáticamente
+        updateCurrentYear();
+
+        // Cargar configuración de contacto y redes sociales
+        await ProductManager.loadContactConfig();
+        await ProductManager.loadSocialConfig();
+
+        // Configurar listeners en tiempo real
+        setupRealtimeListeners();
 
         console.log('✅ Todos los módulos inicializados correctamente');
 
@@ -1004,7 +1359,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Toast de bienvenida
         setTimeout(() => {
-            ToastManager.show('¡Bienvenido a inFusion! Explora nuestros productos premium', 'info', 4000);
+            ToastManager.show('¡Bienvenido a La Previa! Explora nuestros productos premium', 'info', 4000);
         }, 1000);
 
     } catch (error) {
@@ -1019,7 +1374,7 @@ window.CartManager = CartManager;
 window.ProductModal = ProductModal;
 window.ToastManager = ToastManager;
 
-console.log('📦 Script optimizado de inFusion cargado correctamente');
+console.log('📦 Script optimizado de La Previa cargado correctamente');
 
 // ===== REGISTRO DEL SERVICE WORKER (PWA) =====
 if ('serviceWorker' in navigator) {

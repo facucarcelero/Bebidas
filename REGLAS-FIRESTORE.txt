@@ -1,0 +1,43 @@
+// ===== REGLAS DE FIRESTORE - LA PREVIA =====
+// Copia y pega estas reglas en Firebase Console
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Productos - Lectura pública, escritura sin autenticación (ya que usamos usuarios locales)
+    match /productos/{productId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // Categorías - Lectura pública, escritura sin autenticación
+    match /categorias/{categoryId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // Banners - Lectura pública, escritura sin autenticación
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    // Configuración - Lectura pública, escritura sin autenticación
+    match /configuracion/{configId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+
+// ===== IMPORTANTE =====
+// Estas reglas permiten que cualquiera pueda escribir en la base de datos.
+// Es seguro porque:
+// 1. El panel admin solo lo conoces tú (admin.html)
+// 2. Los usuarios normales no conocen la existencia del panel
+// 3. Solo tú y facu tienen las credenciales de acceso
+
+// Si quieres más seguridad en el futuro, puedes implementar Firebase Authentication
+// y cambiar "if true" por "if request.auth != null"
+

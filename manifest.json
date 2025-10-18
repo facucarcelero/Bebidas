@@ -1,6 +1,6 @@
 {
-  "name": "inFusion - Distribuidora de Bebidas Premium",
-  "short_name": "inFusion",
+  "name": "La Previa - Distribuidora de Bebidas Premium",
+  "short_name": "La Previa",
   "description": "Tu distribuidor de confianza para bebidas premium. Gin artesanal, vinos seleccionados y licores de calidad.",
   "start_url": "/index.html",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "./Logo/in Fusion.png",
+      "src": "./Logo/La Previa.jpg",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "./Logo/in Fusion.png",
+      "src": "./Logo/La Previa.jpg",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -37,7 +37,7 @@
       "url": "/index.html#productos",
       "icons": [
         {
-          "src": "./Logo/in Fusion.png",
+          "src": "./Logo/La Previa.jpg",
           "sizes": "192x192"
         }
       ]
@@ -49,7 +49,7 @@
       "url": "https://api.whatsapp.com/send?phone=+5492644127229",
       "icons": [
         {
-          "src": "./Logo/in Fusion.png",
+          "src": "./Logo/La Previa.jpg",
           "sizes": "192x192"
         }
       ]

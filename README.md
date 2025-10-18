@@ -1,8 +1,8 @@
-# inFusion - Sitio Web de Bebidas Premium
+# La Previa - Sitio Web de Bebidas Premium
 
 ## 🎉 Proyecto Completado - Versión 2.0 OPTIMIZADA
 
-Este es un sitio web **completamente optimizado** para inFusion, una empresa de distribución de bebidas premium. El proyecto incluye tanto el sitio web principal como un sistema de administración completo.
+Este es un sitio web **completamente optimizado** para La Previa, una empresa de distribución de bebidas premium. El proyecto incluye tanto el sitio web principal como un sistema de administración completo.
 
 ### ⚡ NUEVA VERSIÓN 2.0 - MEJORAS COMPLETAS
 ✨ **+50 mejoras implementadas** para móviles, tablets y desktop  
@@ -210,7 +210,7 @@ Todas las configuraciones están en variables CSS para fácil personalización e
 - **WhatsApp**: +54 9 2644 127229
 - **Email**: infusion.ventadebebidas@gmail.com
 - **Instagram**: @infusion.bebidas
-- **Facebook**: inFusion Bebidas
+- **Facebook**: La Previa Bebidas
 - **TikTok**: @In.fusion.bebidas
 
 ## 🚀 Mejoras Completadas v2.0
@@ -267,6 +267,6 @@ El sitio web está **completamente optimizado** y listo para competir con los me
 
 ---
 
-**Desarrollado con ❤️ para inFusion**  
+**Desarrollado con ❤️ para La Previa**  
 *Versión 2.0 - Octubre 2024*  
 *+50 mejoras implementadas para la mejor experiencia posible* 

@@ -1,4 +1,4 @@
-# 🚀 MEJORAS IMPLEMENTADAS EN INFUSION
+# 🚀 MEJORAS IMPLEMENTADAS EN LA PREVIA
 
 ## Versión 2.0 - Optimización Completa
 

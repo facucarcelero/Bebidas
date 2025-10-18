@@ -1,6 +1,6 @@
-// Service Worker para inFusion PWA
-const CACHE_NAME = 'infusion-v1.0';
-const DYNAMIC_CACHE = 'infusion-dynamic-v1.0';
+// Service Worker para La Previa PWA
+const CACHE_NAME = 'laprevia-v1.1';
+const DYNAMIC_CACHE = 'laprevia-dynamic-v1.1';
 
 // Archivos críticos para cachear
 const STATIC_ASSETS = [
@@ -9,8 +9,8 @@ const STATIC_ASSETS = [
     '/styles-optimized.css',
     '/script-optimized.js',
     '/manifest.json',
-    '/Logo/in Fusion.png',
-    '/Logo/in Fusion.svg',
+    '/Logo/La Previa.jpg',
+    '/Logo/La Previa.jpg',
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
 ];
@@ -56,6 +56,21 @@ self.addEventListener('activate', (event) => {
 // Estrategia de caché: Network First con fallback a Cache
 self.addEventListener('fetch', (event) => {
     const { request } = event;
+    
+    // BLOQUEAR peticiones a placeholder.jpg
+    if (request.url.includes('placeholder.jpg') || request.url.includes('IMG/placeholder')) {
+        event.respondWith(
+            new Response(
+                '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect fill="#1A0033" width="200" height="200"/></svg>',
+                {
+                    status: 200,
+                    statusText: 'OK',
+                    headers: { 'Content-Type': 'image/svg+xml' }
+                }
+            )
+        );
+        return;
+    }
     
     // Ignorar requests que no sean GET
     if (request.method !== 'GET') return;
@@ -121,8 +136,8 @@ self.addEventListener('message', (event) => {
 self.addEventListener('push', (event) => {
     const options = {
         body: event.data ? event.data.text() : 'Nueva notificación de inFusion',
-        icon: '/Logo/in Fusion.png',
-        badge: '/Logo/in Fusion.png',
+        icon: '/Logo/La Previa.jpg',
+        badge: '/Logo/La Previa.jpg',
         vibrate: [200, 100, 200],
         data: {
             dateOfArrival: Date.now(),
@@ -132,12 +147,12 @@ self.addEventListener('push', (event) => {
             {
                 action: 'explore',
                 title: 'Ver productos',
-                icon: '/Logo/in Fusion.png'
+                icon: '/Logo/La Previa.jpg'
             },
             {
                 action: 'close',
                 title: 'Cerrar',
-                icon: '/Logo/in Fusion.png'
+                icon: '/Logo/La Previa.jpg'
             }
         ]
     };

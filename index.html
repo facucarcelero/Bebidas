@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     
     <!-- SEO Meta Tags -->
-    <title>inFusion - Distribuidora de Bebidas Premium | Gin, Vino y Licores</title>
-    <meta name="description" content="inFusion - Tu distribuidor de confianza para bebidas premium. Gin artesanal, vinos seleccionados y licores de calidad. Los mejores precios organizando con tiempo. Envío en 24-48 horas.">
+    <title>La Previa - Distribuidora de Bebidas Premium | Gin, Vino y Licores</title>
+    <meta name="description" content="La Previa - Tu distribuidor de confianza para bebidas premium. Gin artesanal, vinos seleccionados y licores de calidad. Los mejores precios organizando con tiempo. Envío en 24-48 horas.">
     <meta name="keywords" content="bebidas premium, gin, vino, licor, distribuidora bebidas, gin artesanal, vino argentino, bebidas alcohólicas">
-    <meta name="author" content="inFusion">
+    <meta name="author" content="La Previa">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://infusion.com.ar/">
-    <meta property="og:title" content="inFusion - Distribuidora de Bebidas Premium">
+    <meta property="og:url" content="https://laprevia.com.ar/">
+    <meta property="og:title" content="La Previa - Distribuidora de Bebidas Premium">
     <meta property="og:description" content="Los mejores precios en bebidas premium. Gin, vino y licores de calidad. Organizando con tiempo, todo es más barato.">
-    <meta property="og:image" content="./Logo/in Fusion.png">
+    <meta property="og:image" content="./Logo/La Previa.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://infusion.com.ar/">
-    <meta property="twitter:title" content="inFusion - Distribuidora de Bebidas Premium">
+    <meta property="twitter:url" content="https://laprevia.com.ar/">
+    <meta property="twitter:title" content="La Previa - Distribuidora de Bebidas Premium">
     <meta property="twitter:description" content="Los mejores precios en bebidas premium. Gin, vino y licores de calidad.">
-    <meta property="twitter:image" content="./Logo/in Fusion.png">
+    <meta property="twitter:image" content="./Logo/La Previa.jpg">
     
     <!-- Theme Color -->
     <meta name="theme-color" content="#ff6b35">
@@ -34,9 +34,9 @@
     <link rel="manifest" href="./manifest.json">
     
     <!-- Icons -->
-    <link rel="icon" type="image/svg+xml" href="./Logo/in Fusion.svg">
-    <link rel="shortcut icon" href="./Logo/in Fusion.svg" type="image/x-icon">
-    <link rel="apple-touch-icon" href="./Logo/in Fusion.png">
+    <link rel="icon" type="image/svg+xml" href="./Logo/La Previa.jpg">
+    <link rel="shortcut icon" href="./Logo/La Previa.jpg" type="image/x-icon">
+    <link rel="apple-touch-icon" href="./Logo/La Previa.jpg">
     
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,10 +58,10 @@
     {
       "@context": "https://schema.org",
       "@type": "Store",
-      "name": "inFusion",
+      "name": "La Previa",
       "description": "Distribuidora de bebidas premium",
-      "url": "https://infusion.com.ar",
-      "logo": "./Logo/in Fusion.png",
+      "url": "https://laprevia.com.ar",
+      "logo": "./Logo/La Previa.jpg",
       "telephone": "+54-2644-847330",
       "email": "infusion.ventadebebidas@gmail.com",
       "address": {
@@ -80,17 +80,14 @@
     <!-- Loading Screen -->
     <div id="loading-screen" class="loading-screen" aria-hidden="true">
         <div class="loading-content">
-            <img src="./Logo/in Fusion.png" alt="inFusion Logo" class="loading-logo">
+            <img src="./Logo/La Previa.jpg" alt="La Previa Logo" class="loading-logo">
             <div class="loading-spinner"></div>
             <p>Cargando experiencia premium...</p>
         </div>
     </div>
 
-    <!-- Skip to main content link for accessibility -->
-    <a href="#productos" class="skip-to-content">Saltar al contenido principal</a>
-
     <!-- WhatsApp Float Button -->
-    <a href="https://api.whatsapp.com/send?phone=+5492644127229&text=Hola%20inFusion%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." 
+    <a href="https://api.whatsapp.com/send?phone=+5492644127229&text=Hola%20La Previa%20tengo%20una%20duda%20sobre%20un%20producto%20que%20vi%20en%20la%20pagin%C3%A1." 
        class="whatsapp-float" 
        target="_blank" 
        rel="noopener noreferrer"
@@ -103,7 +100,7 @@
         <div class="header-container">
             <div class="logo">
                 <a href="#inicio" aria-label="Ir al inicio">
-                    <img src="./Logo/in Fusion.png" alt="inFusion - Distribuidora de Bebidas Premium">
+                    <img src="./Logo/La Previa.jpg" alt="La Previa - Distribuidora de Bebidas Premium">
                 </a>
             </div>
             
@@ -132,11 +129,19 @@
                      aria-hidden="true">
                     <div class="cart-header">
                         <h3 id="cart-title">Carrito de Compras</h3>
-                        <button id="close-cart" 
-                                class="close-cart-button"
-                                aria-label="Cerrar carrito">
-                            <i class="fas fa-times" aria-hidden="true"></i>
-                        </button>
+                        <div class="cart-header-actions">
+                            <button id="clear-cart" 
+                                    class="clear-cart-button"
+                                    aria-label="Vaciar carrito"
+                                    title="Vaciar carrito">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <button id="close-cart" 
+                                    class="close-cart-button"
+                                    aria-label="Cerrar carrito">
+                                <i class="fas fa-times" aria-hidden="true"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="cart-items" 
                          id="cart-items" 
@@ -246,19 +251,8 @@
                            autocomplete="off">
                     <i class="fas fa-search" aria-hidden="true"></i>
                 </div>
-                <div class="filters" role="group" aria-label="Filtrar por categoría">
-                    <button class="filter-btn active" 
-                            data-filter="todos"
-                            aria-pressed="true">Todos</button>
-                    <button class="filter-btn" 
-                            data-filter="gin"
-                            aria-pressed="false">Gin</button>
-                    <button class="filter-btn" 
-                            data-filter="vino"
-                            aria-pressed="false">Vino</button>
-                    <button class="filter-btn" 
-                            data-filter="licor"
-                            aria-pressed="false">Licor</button>
+                <div class="filters" role="group" aria-label="Filtrar por categoría" id="category-filters">
+                    <!-- Los filtros se generarán dinámicamente según las categorías disponibles -->
                 </div>
             </div>
 
@@ -279,7 +273,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-text">
-                    <h2>Sobre inFusion</h2>
+                    <h2>Sobre La Previa</h2>
                     <p>Somos especialistas en recopilar las mejores ofertas del mercado de bebidas. Nuestra misión es conectar a nuestros clientes con productos premium a precios accesibles.</p>
                     <p>Al organizar con tiempo, todo es más barato. Trabajamos directamente con distribuidores para ofrecerte los mejores precios en una amplia variedad de bebidas.</p>
                     <div class="features">
@@ -320,14 +314,14 @@
                         <i class="fab fa-whatsapp"></i>
                         <div>
                             <h3>WhatsApp</h3>
-                            <p>+54 9 2644 847330</p>
+                            <p id="contact-whatsapp">+54 9 2644 847330</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
                         <div>
                             <h3>Email</h3>
-                            <p>infusion.ventadebebidas@gmail.com</p>
+                            <p id="contact-email">infusion.ventadebebidas@gmail.com</p>
                         </div>
                     </div>
                     <div class="contact-item">
@@ -343,38 +337,34 @@
     </section>
 
     <!-- Footer -->
-    <!-- Enlace discreto al admin -->
-    <div style="position: fixed; bottom: 10px; left: 10px; opacity: 0.3; z-index: 999;">
-        <a href="admin-login.html" style="color: white; text-decoration: none; font-size: 12px;">Admin</a>
-    </div>
 
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <img src="./Logo/in Fusion.png" alt="inFusion" class="footer-logo">
+                    <img src="./Logo/La Previa.jpg" alt="La Previa" class="footer-logo">
                     <p>Tu distribuidor de confianza para bebidas premium</p>
                 </div>
                 <div class="footer-section">
                     <h3>Síguenos</h3>
                     <div class="social-icons">
-                        <a href="https://www.tiktok.com/@In.fusion.bebidas" target="_blank" aria-label="TikTok">
+                        <a href="https://www.tiktok.com/@In.fusion.bebidas" target="_blank" aria-label="TikTok" id="social-tiktok">
                             <i class="fab fa-tiktok"></i>
                         </a>
-                        <a href="https://www.instagram.com/infusion.bebidas/" target="_blank" aria-label="Instagram">
+                        <a href="https://www.instagram.com/infusion.bebidas/" target="_blank" aria-label="Instagram" id="social-instagram">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="https://www.facebook.com/profile.php?id=61566118048160" target="_blank" aria-label="Facebook">
+                        <a href="https://www.facebook.com/profile.php?id=61566118048160" target="_blank" aria-label="Facebook" id="social-facebook">
                             <i class="fab fa-facebook"></i>
                         </a>
-                        <a href="mailto:infusion.ventadebebidas@gmail.com" aria-label="Email">
+                        <a href="mailto:infusion.ventadebebidas@gmail.com" aria-label="Email" id="social-email">
                             <i class="fas fa-envelope"></i>
                         </a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 inFusion. Todos los derechos reservados.</p>
+                <p>&copy; <span id="current-year">2024</span> La Previa. Todos los derechos reservados.</p>
             </div>
         </div>
     </footer>
@@ -421,9 +411,47 @@
         </div>
     </div>
 
-    <!-- Toast de notificaciones -->
-    <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+    <!-- Modal de Confirmación -->
+    <div id="confirm-modal" class="modal" role="dialog" aria-labelledby="confirm-title" aria-hidden="true">
+        <div class="modal-overlay" aria-hidden="true"></div>
+        <div class="modal-content confirm-modal-container" role="document">
+            <div class="confirm-header">
+                <div class="confirm-icon">
+                    <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+                </div>
+                <h2 id="confirm-title">Confirmar Acción</h2>
+                <button id="confirm-close" class="modal-close" aria-label="Cerrar modal">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="confirm-body">
+                <p id="confirm-message">¿Estás seguro de que quieres vaciar el carrito?</p>
+                <div class="confirm-actions">
+                    <button id="confirm-cancel" class="btn-cancel">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                        Cancelar
+                    </button>
+                    <button id="confirm-ok" class="btn-confirm">
+                        <i class="fas fa-trash" aria-hidden="true"></i>
+                        Vaciar Carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Supresión de errores (debe ir primero) -->
+    <script src="./error-suppression.js"></script>
+    
+    <!-- Firebase (para cargar productos desde la base de datos) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Deshabilitar Firebase Auth para evitar errores -->
+    <script src="./firebase-no-auth.js"></script>
+    
+    <script src="firebase-config.js"></script>
+    
     <script src="script-optimized.js"></script>
 </body>
 </html>
