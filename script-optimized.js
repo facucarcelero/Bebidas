@@ -10,7 +10,8 @@ const AppState = {
     currentSearch: '',
     isLoading: true,
     products: [],
-    useFirebase: false
+    useFirebase: false,
+    whatsappNumber: '+5492644127229' // Número por defecto, se actualiza desde Firebase
 };
 
 // ===== FIREBASE INITIALIZATION =====
@@ -453,9 +454,12 @@ const CartManager = {
 
         message += `\n💰 Total: $${Utils.formatPrice(total)}\n\n¡Gracias!`;
 
-        const phoneNumber = "+5492644127229";
+        // Usar el número de WhatsApp dinámico desde el estado global
+        const phoneNumber = AppState.whatsappNumber;
         const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        
+        console.log('📱 Abriendo WhatsApp con número:', phoneNumber);
     },
 
     showConfirmModal() {
@@ -1163,7 +1167,7 @@ async function loadContactConfig() {
 
 // Actualizar la visualización de contacto
 function updateContactDisplay(data) {
-    // Actualizar WhatsApp
+    // Actualizar WhatsApp en la sección de contacto
     const whatsappElement = document.getElementById('contact-whatsapp');
     if (whatsappElement && data.whatsapp) {
         whatsappElement.textContent = data.whatsapp;
@@ -1179,6 +1183,21 @@ function updateContactDisplay(data) {
     const socialEmailElement = document.getElementById('social-email');
     if (socialEmailElement && data.email) {
         socialEmailElement.href = `mailto:${data.email}`;
+    }
+    
+    // Actualizar botón flotante de WhatsApp
+    if (data.whatsapp) {
+        // Guardar el número en el estado global
+        const cleanNumber = data.whatsapp.replace(/\s+/g, ''); // Eliminar espacios
+        AppState.whatsappNumber = cleanNumber;
+        
+        // Actualizar el href del botón flotante
+        const whatsappFloat = document.querySelector('.whatsapp-float');
+        if (whatsappFloat) {
+            const message = encodeURIComponent('Hola La Previa tengo una duda sobre un producto que vi en la página.');
+            whatsappFloat.href = `https://api.whatsapp.com/send?phone=${cleanNumber}&text=${message}`;
+            console.log('✅ Botón flotante de WhatsApp actualizado:', cleanNumber);
+        }
     }
 }
 
